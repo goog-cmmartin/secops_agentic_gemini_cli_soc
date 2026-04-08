@@ -9,6 +9,22 @@
       "description": "The path to the Dolt binary.",
       "envVar": "DOLT_BINARY_PATH",
       "default": "dolt"
+    },
+    {
+      "name": "Google Cloud Project ID",
+      "description": "The GCP Project ID where SecOps and Logging are located.",
+      "envVar": "GCP_PROJECT_ID"
+    },
+    {
+      "name": "SecOps Region",
+      "description": "The Google SecOps region (e.g., 'us', 'europe').",
+      "envVar": "SECOPS_REGION",
+      "default": "us"
+    },
+    {
+      "name": "SecOps Customer ID",
+      "description": "The UUID of your Google SecOps customer.",
+      "envVar": "SECOPS_CUSTOMER_ID"
     }
   ]
 }
