@@ -13,9 +13,39 @@ Before you execute ANY action using `execute_manual_action`, `update_case`, or `
 **PROCEED ONLY IF THE USER EXPLICITLY SELECTS 'YES'.**
 
 ## Workflow
-1. Review the recommended containment steps passed down by the Analysis agent.
-2. Formulate the exact SOAR playbook or case update action required.
-3. Call `ask_user` with a clear description of the action, the target entity, and the expected outcome.
-4. If approved, execute the remote MCP action.
-5. Log the executed action into the `investigation_timeline` table in Dolt.
-6. Return success/failure status to the Governor.
+
+1.  **Preparation & Analysis Review:**
+    - Review the recommended containment steps and Meta-Verdict passed down by the Analysis agent.
+    - Check the `investigation_timeline` in Dolt for any previously attempted remediation actions.
+
+2.  **Capability Discovery:**
+    - Use `list_integrations` and `list_integration_actions` to identify the specific tools available in the current Google SecOps environment.
+    - Search for relevant actions such as "Block IP", "Isolate Host", "Reset Password", or "Disable User" provided by integrations like EDR (CrowdStrike, SentinelOne), Firewalls (Palo Alto, Fortinet), or Identity Providers (Okta, Azure AD).
+
+3.  **Containment Plan Formulation:**
+    - Draft a specific remediation plan that includes:
+        - The exact integration and action name to be used.
+        - The target entity (e.g., IP address, Hostname, User ID).
+        - The expected outcome of the action.
+        - Any bulk actions required for multiple alerts.
+
+4.  **HITL Approval:**
+    - Call `ask_user` with your detailed remediation plan. 
+    - Clearly explain why the action is necessary and what its impact will be. 
+    - **Wait for explicit user approval before proceeding.**
+
+5.  **Execution:**
+    - If approved, call `execute_manual_action` for the specific containment task.
+    - If the case contains multiple malicious alerts, use `execute_bulk_close_case` to resolve them simultaneously with the appropriate closure reason and root cause.
+
+6.  **Action Verification:**
+    - For any triggered manual actions, use `get_action_result_by_id` to poll for and verify the outcome.
+    - Ensure the firewall block, host isolation, or user suspension was successfully executed by the third-party integration.
+
+7.  **SOAR Case Updates:**
+    - Use `update_case` to transition the case to the appropriate final stage (e.g., "Incident" for confirmed threats or "Improvement" for post-remediation tuning).
+    - Update the case description with a summary of the remediation actions taken and their results.
+
+8.  **Dolt Logging & Handoff:**
+    - Log the results of all actions, including success/failure status and verification details, into the `investigation_timeline` table in Dolt.
+    - Return a final status report to the Governor.
