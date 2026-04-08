@@ -1,0 +1,14 @@
+{
+  "name": "agentic-soc",
+  "version": "1.0.0",
+  "description": "Governor Agent for orchestrating security investigations in an Agentic SOC using NIST framework and Dolt database.",
+  "contextFileName": "GEMINI.md",
+  "settings": [
+    {
+      "name": "Dolt Binary Path",
+      "description": "The path to the Dolt binary.",
+      "envVar": "DOLT_BINARY_PATH",
+      "default": "dolt"
+    }
+  ]
+}

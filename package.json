@@ -1,0 +1,15 @@
+{
+  "name": "agentic-soc",
+  "version": "1.0.0",
+  "description": "Agentic SOC Extension utilizing Dolt and Google SecOps MCP based on NIST SP 800-61r3.",
+  "main": "GEMINI.md",
+  "keywords": [
+    "soc",
+    "security",
+    "dolt",
+    "secops",
+    "nist"
+  ],
+  "author": "",
+  "license": "ISC"
+}
