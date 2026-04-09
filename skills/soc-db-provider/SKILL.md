@@ -21,8 +21,8 @@ Use the `dolt` CLI:
 `run_shell_command("dolt sql -q \"YOUR_SQL_QUERY\"")`
 
 **If `STORAGE_PROVIDER=sqlite`:**
-Use the `sqlite3` CLI (using `investigation.db` as the local file):
-`run_shell_command("sqlite3 investigation.db \"YOUR_SQL_QUERY\"")`
+Use the `sqlite3` CLI. **CRITICAL:** Use the project's temporary directory for the database file to avoid cluttering the workspace:
+`run_shell_command("sqlite3 \$GEMINI_TMP_DIR/investigation.db \"YOUR_SQL_QUERY\"")`
 
 ### 2. Table Schema
 Assume the following tables are available regardless of the provider:
@@ -37,10 +37,10 @@ If you are using **Dolt** and performing a "Meta-Investigation," you should use 
 **Note:** If using **SQLite**, skip the branching step as it is not supported. Log directly to the main timeline.
 
 ### 4. Initialization
-If the database file (`investigation.db` for SQLite) or Dolt repository doesn't exist, use the provided `schema.sql` to initialize it:
+If the database file or Dolt repository doesn't exist, use the provided `schema.sql` to initialize it:
 
 **For SQLite:**
-`run_shell_command("sqlite3 investigation.db < schema.sql")`
+`run_shell_command("sqlite3 \$GEMINI_TMP_DIR/investigation.db < schema.sql")`
 
 **For Dolt:**
 `run_shell_command("dolt init && dolt sql < schema.sql")`

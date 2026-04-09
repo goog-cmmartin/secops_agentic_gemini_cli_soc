@@ -5,15 +5,15 @@
   "contextFileName": "GEMINI.md",
   "settings": [
     {
-      "name": "Dolt Binary Path",
-      "description": "The path to the Dolt binary.",
-      "envVar": "DOLT_BINARY_PATH",
-      "default": "dolt"
+      "name": "Storage Provider",
+      "description": "The local storage backend for investigation state (sqlite or dolt).",
+      "envVar": "STORAGE_PROVIDER",
+      "default": "sqlite"
     },
     {
-      "name": "Storage Provider",
-      "description": "The local storage backend for investigation state (dolt or sqlite).",
-      "envVar": "STORAGE_PROVIDER",
+      "name": "Dolt Binary Path",
+      "description": "The path to the Dolt binary (Optional: Only required if Storage Provider is set to 'dolt').",
+      "envVar": "DOLT_BINARY_PATH",
       "default": "dolt"
     },
     {

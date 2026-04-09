@@ -37,12 +37,9 @@ gemini extension install https://github.com/goog-cmmartin/secops_agentic_gemini_
 
 This extension uses several Google-hosted MCP servers. When you install the extension, you will be prompted to provide the following settings, which are stored in your `gemini` configuration:
 
+- **Storage Provider** (`STORAGE_PROVIDER`): The local storage backend for investigation state (defaults to `sqlite`, can be set to `dolt`).
+- **Dolt Binary Path** (`DOLT_BINARY_PATH`): The path to your `dolt` binary (Optional: Only required if `STORAGE_PROVIDER` is set to `dolt`).
 - **Google Cloud Project ID** (`GCP_PROJECT_ID`): The project ID where your SecOps instance and logs are located.
-- **SecOps Region** (`SECOPS_REGION`): The region for your SecOps instance (e.g., `us`).
-- **SecOps Customer ID** (`SECOPS_CUSTOMER_ID`): The UUID for your SecOps customer.
-- **Timeline Data Table Name** (`TIMELINE_DATA_TABLE`): The name of the SecOps Data Table for investigation timelines (defaults to `investigation_timeline`).
-- **IOC Data Table Name** (`IOC_DATA_TABLE`): The name of the SecOps Data Table for malicious IOCs (defaults to `malicious_iocs`).
-- **Dolt Binary Path** (`DOLT_BINARY_PATH`): The path to your `dolt` binary (defaults to `dolt`).
 
 ### Native Export Behavior
 
