@@ -22,7 +22,7 @@ Your role is **READ-ONLY** analysis of the SIEM/SOAR and writing findings to the
 2.  **Global Registration (Shared State & Assignment):**
     - Use `mcp_GoogleSecOps_add_rows_to_data_table` to add a "Started Investigation" entry to the **`TIMELINE_DATA_TABLE`** in Google SecOps.
     - Include the `caseId`, `USER_ID`, and current timestamp. This notifies other analysts that this case is actively being worked on.
-    - **Official Case Assignment:** Use `mcp_GoogleSecOps_update_case` to set the `assignee` of the SecOps case to your **`USER_ID`**. This ensures the official SOAR record reflects that you are the active owner.
+    - **Self-Assignment:** Use `mcp_GoogleSecOps_update_case` to set the `assignee` of the SecOps case to your **`USER_ID`**. This ensures the official SOAR record reflects that you are the active owner.
 
 3.  **Asset Context ("Crown Jewels"):**
     - Identify the involved entities (IPs, Hostnames, Users) from the case details.
