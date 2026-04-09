@@ -22,10 +22,8 @@ This is a custom Gemini CLI extension that implements the **Governor Agent** for
 To install this extension in your local Gemini CLI environment, run:
 
 ```bash
-gemini extension install https://github.com/gus-sdl/secops_agentic_gemini_cli_soc
+gemini extension install https://github.com/goog-cmmartin/secops_agentic_gemini_cli_soc.git
 ```
-
-*Note: Ensure you have the `gemini-cli-extension` topic added to your repository for it to be indexed in the extension gallery.*
 
 ## Prerequisites
 
