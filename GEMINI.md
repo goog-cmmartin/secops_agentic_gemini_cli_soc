@@ -15,6 +15,12 @@ At the start of every session or when first activated, you MUST perform a **Prer
 2. If any tools are missing, inform the user immediately and refer them to the **Manual Tool Configuration** section of the `README.md`.
 3. Check the `STORAGE_PROVIDER` setting. If `dolt`, verify the `dolt` binary is functional via `run_shell_command("dolt version")`.
 
+## Global MCP Parameters
+When using Google SecOps tools, you MUST use the following parameters for **EVERY** request, retrieved from the extension settings:
+- **Customer ID:** `SECOPS_CUSTOMER_ID`
+- **Region:** `SECOPS_REGION`
+- **Project ID:** `GCP_PROJECT_ID`
+
 ## The System of Record: SOC Database Provider
 The "brain" of the SOC is a database (Dolt or SQLite). All state, IOCs, and timelines are stored here.
 **Use the `soc-db-provider` skill** to read and update state. This skill automatically handles the differences between Dolt and SQLite based on the `STORAGE_PROVIDER` setting.

@@ -50,21 +50,49 @@ This extension uses several Google-hosted MCP servers. When you install the exte
 
 ### Manual Tool Configuration
 
-This extension depends on several Google-hosted MCP servers. Before running the extension, ensure these are configured in your `~/.gemini/settings.json`:
+This extension depends on several Google-hosted MCP servers. Before running the extension, ensure these are configured in your `~/.gemini/settings.json`. Replace `YOUR_PROJECT_ID` with the project ID you used during the extension setup:
 
 ```json
 {
   "mcpServers": {
-    "google-secops": {
-      "authProviderType": "google_credentials"
+    "GoogleSecOps": {
+      "httpUrl": "https://us-chronicle.googleapis.com/mcp",
+      "authProviderType": "google_credentials",
+      "oauth": {
+        "scopes": [
+          "https://www.googleapis.com/auth/cloud-platform"
+        ]
+      },
+      "timeout": 30000,
+      "headers": {
+        "x-goog-user-project": "YOUR_PROJECT_ID"
+      }
     },
-    "google-cloud-logging": {
-      "authProviderType": "google_credentials"
+    "CloudLogging": {
+      "httpUrl": "https://logging.googleapis.com/mcp",
+      "authProviderType": "google_credentials",
+      "oauth": {
+        "scopes": [
+          "https://www.googleapis.com/auth/cloud-platform"
+        ]
+      },
+      "headers": {
+        "x-goog-user-project": "YOUR_PROJECT_ID"
+      }
     },
-    "google-cloud-monitoring": {
-      "authProviderType": "google_credentials"
+    "CloudMonitoring": {
+      "httpUrl": "https://monitoring.googleapis.com/mcp",
+      "authProviderType": "google_credentials",
+      "oauth": {
+        "scopes": [
+          "https://www.googleapis.com/auth/cloud-platform"
+        ]
+      },
+      "headers": {
+        "x-goog-user-project": "YOUR_PROJECT_ID"
+      }
     },
-    "developer-knowledge": {
+    "DeveloperKnowledge": {
       "authProviderType": "google_credentials"
     }
   }
