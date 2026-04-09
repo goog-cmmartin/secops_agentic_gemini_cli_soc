@@ -73,4 +73,4 @@ The following setting can be configured in your `config.toml` or as an environme
 
 ## License
 
-MIT
+Apache 2.0
