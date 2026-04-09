@@ -11,6 +11,12 @@
       "default": "dolt"
     },
     {
+      "name": "Storage Provider",
+      "description": "The local storage backend for investigation state (dolt or sqlite).",
+      "envVar": "STORAGE_PROVIDER",
+      "default": "dolt"
+    },
+    {
       "name": "Google Cloud Project ID",
       "description": "The GCP Project ID where SecOps and Logging are located.",
       "envVar": "GCP_PROJECT_ID"

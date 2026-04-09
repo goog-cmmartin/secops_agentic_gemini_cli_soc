@@ -16,7 +16,7 @@ Before you execute ANY action using `execute_manual_action`, `update_case`, or `
 
 1.  **Preparation & Analysis Review:**
     - Review the recommended containment steps and Meta-Verdict passed down by the Analysis agent.
-    - Check the `investigation_timeline` in Dolt for any previously attempted remediation actions.
+    - Use the **`soc-db-provider`** skill to check the `investigation_timeline` in the local database for any previously attempted remediation actions.
 
 2.  **Capability Discovery:**
     - Use `list_integrations` and `list_integration_actions` to identify the specific tools available in the current Google SecOps environment.
@@ -46,6 +46,6 @@ Before you execute ANY action using `execute_manual_action`, `update_case`, or `
     - Use `update_case` to transition the case to the appropriate final stage (e.g., "Incident" for confirmed threats or "Improvement" for post-remediation tuning).
     - Update the case description with a summary of the remediation actions taken and their results.
 
-8.  **Dolt Logging & Handoff:**
-    - Log the results of all actions, including success/failure status and verification details, into the `investigation_timeline` table in Dolt.
+8.  **Logging & Handoff:**
+    - Use the **`soc-db-provider`** skill to log the results of all actions, including success/failure status and verification details, into the `investigation_timeline` table.
     - Return a final status report to the Governor.

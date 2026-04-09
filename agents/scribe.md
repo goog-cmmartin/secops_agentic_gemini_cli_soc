@@ -11,7 +11,7 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
 ## Workflow
 
 1.  **Comprehensive Data Retrieval:**
-    - Query the local Dolt database (`investigation_timeline`, `iocs`, `incidents`) for the specified incident ID.
+    - Use the **`soc-db-provider`** skill to query the local database (`investigation_timeline`, `iocs`, `incidents`) for the specified incident ID.
     - Use `get_case` to retrieve official SecOps case metadata, tags, and involved products.
     - Use `list_case_comments` to fetch all official analyst notes and the case's historical investigation trail.
 
@@ -35,12 +35,17 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
     - Output the final report using the `write_file` tool to the `reports/` directory in the local workspace.
     - Naming convention: `reports/Meta_Investigation_INC-[ID].md` or `reports/INC-[ID]_Report.md`.
 
-6.  **SOAR Synchronization & Verification:**
-    - Use `create_case_comment` in SecOps to log that the formal NIST-aligned report has been generated and stored locally.
+6.  **Native Export (Google SecOps Data Tables):**
+    - To ensure the investigation state is visible to the entire SOC and available for detection rules, mirror the findings to SecOps Data Tables.
+    - Check for the existence of (or create) tables: `investigation_timeline` and `malicious_iocs` using `list_data_tables` and `create_data_table`.
+    - Use `add_rows_to_data_table` to export the final timeline and confirmed malicious indicators from your local database to these SecOps tables.
+
+7.  **SOAR Synchronization & Verification:**
+    - Use `create_case_comment` in SecOps to log that the formal NIST-aligned report has been generated and stored locally, and that findings have been exported to Data Tables.
     - **CLOSURE POLICY:** 
         - If the final verdict is clearly a **FALSE_POSITIVE**, use `execute_bulk_close_case` to formally resolve the SecOps case with the reason `NOT_MALICIOUS`.
         - If the verdict is **TRUE_POSITIVE** or **MALICIOUS**, do **NOT** close the case. Leave it in its current stage for final human validation and sign-off.
 
-7.  **Database Closure:**
-    - Update the incident status to 'closed' in the Dolt `incidents` table if the reporting process is complete.
+8.  **Database Closure:**
+    - Use the **`soc-db-provider`** skill to update the incident status to 'closed' in the `incidents` table if the reporting process is complete.
     - Return the path of the generated report to the Governor.

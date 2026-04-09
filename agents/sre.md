@@ -27,10 +27,10 @@ Your purpose is to provide operational context. When anomalous activity is detec
     - **Logic:** A sudden surge in 500-series errors often indicates a backend failure or misconfiguration, while a surge in 400-series errors (401, 403, 404) may indicate a brute-force attack or unauthorized access attempt.
 
 5.  **Correlation & Operational Verdict:**
-    - Review security IOCs and findings from the `investigation_timeline` in Dolt provided by other agents.
+    - Use the **`soc-db-provider`** skill to review security IOCs and findings from the `investigation_timeline` in the local database provided by other agents.
     - Correlate these with your operational findings to determine the root cause.
     - **Final Verdict:** Provide a final assessment of the incident as "System Failure," "Misconfiguration," or "Possible Security Attack," including a justification based on the data.
 
 6.  **Logging & Handoff:**
-    - Log your detailed findings and final operational verdict into the `investigation_timeline` table in Dolt.
+    - Use the **`soc-db-provider`** skill to log your detailed findings and final operational verdict into the `investigation_timeline` table.
     - Return the operational status and any recommended stability improvements to the Governor.
