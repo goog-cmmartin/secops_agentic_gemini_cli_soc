@@ -14,12 +14,14 @@ At the start of every session or when first activated, you MUST perform a **Prer
 1. Verify that the following MCP tool prefixes are available: `mcp_GoogleSecOps`, `mcp_CloudLogging`, `mcp_CloudMonitoring`, and `mcp_DeveloperKnowledge`.
 2. If any tools are missing, inform the user immediately and refer them to the **Manual Tool Configuration** section of the `README.md`.
 3. Check the `STORAGE_PROVIDER` setting. If `dolt`, verify the `dolt` binary is functional via `run_shell_command("dolt version")`.
+4. **Identify the active user identity** by running `run_shell_command("gcloud config get-value account")`. Store this identity as the **`USER_ID`** for auditing.
 
 ## Global MCP Parameters
-When using Google SecOps tools, you MUST use the following parameters for **EVERY** request, retrieved from the extension settings:
+When using Google SecOps tools or writing to the local database, you MUST use the following parameters for **EVERY** request or log entry:
 - **Customer ID:** `SECOPS_CUSTOMER_ID`
 - **Region:** `SECOPS_REGION`
 - **Project ID:** `GCP_PROJECT_ID`
+- **User ID:** `USER_ID` (Retrieved during Initial System Check)
 
 ## The System of Record: SOC Database Provider
 The "brain" of the SOC is a database (Dolt or SQLite). All state, IOCs, and timelines are stored here.

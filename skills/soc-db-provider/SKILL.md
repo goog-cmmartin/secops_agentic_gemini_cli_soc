@@ -26,11 +26,14 @@ Use the `sqlite3` CLI. **CRITICAL:** Use the project's temporary directory for t
 
 ### 2. Table Schema
 Assume the following tables are available regardless of the provider:
-- `incidents`: `incident_id`, `title`, `severity`, `status`, `resolution`, `summary`
-- `iocs`: `ioc_id`, `incident_id`, `indicator_type`, `indicator_value`, `is_malicious`
-- `investigation_timeline`: `event_id`, `incident_id`, `actor`, `action_taken`, `timestamp`
+- `incidents`: `incident_id`, `title`, `severity`, `status`, `resolution`, `summary`, `performed_by`, `created_at`, `updated_at`
+- `iocs`: `ioc_id`, `incident_id`, `indicator_type`, `indicator_value`, `is_malicious`, `performed_by`, `first_seen`
+- `investigation_timeline`: `event_id`, `incident_id`, `actor`, `action_taken`, `performed_by`, `timestamp`
 
-### 3. Special Handling: Branching (Dolt Only)
+### 3. Auditing (Who performed the action)
+When writing to any of the tables above, you MUST include the **`USER_ID`** (retrieved by the Governor) in the **`performed_by`** column. This ensures a complete audit trail of the OAuth identity that initiated the agentic workflow.
+
+### 4. Special Handling: Branching (Dolt Only)
 If you are using **Dolt** and performing a "Meta-Investigation," you should use branching for speculative work:
 `run_shell_command("dolt checkout -b investigation/INC-123")`
 

@@ -43,12 +43,14 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
             - `incident_id` (String)
             - `actor` (String)
             - `action_taken` (String)
+            - `performed_by` (String - User OAuth identity)
             - `timestamp` (String)
         - **IOC Table (`IOC_DATA_TABLE`):**
             - `incident_id` (String)
             - `indicator_type` (String)
             - `indicator_value` (String - Map to `cidr` or `regex` type where appropriate for SIEM joins)
             - `is_malicious` (String)
+            - `performed_by` (String - User OAuth identity)
     - Use `add_rows_to_data_table` to export the final timeline and confirmed malicious indicators from your local database to these SecOps tables.
 
 7.  **SOAR Synchronization & Verification:**
