@@ -37,7 +37,8 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
 
 6.  **Native Export (Google SecOps Data Tables):**
     - To ensure the investigation state is visible to the entire SOC and available for detection rules, mirror the findings to SecOps Data Tables.
-    - Check for the existence of (or create) tables: `investigation_timeline` and `malicious_iocs` using `list_data_tables` and `create_data_table`.
+    - Check for the existence of (or create) tables using the names specified in the settings: **`TIMELINE_DATA_TABLE`** and **`IOC_DATA_TABLE`**.
+    - Use `list_data_tables` and `create_data_table` if they do not exist.
     - Use `add_rows_to_data_table` to export the final timeline and confirmed malicious indicators from your local database to these SecOps tables.
 
 7.  **SOAR Synchronization & Verification:**
