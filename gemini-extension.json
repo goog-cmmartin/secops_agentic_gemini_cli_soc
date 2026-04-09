@@ -33,6 +33,11 @@
       "envVar": "SECOPS_CUSTOMER_ID"
     },
     {
+      "name": "Analyst Email",
+      "description": "Your official email address for case assignment and auditing.",
+      "envVar": "ANALYST_EMAIL"
+    },
+    {
       "name": "Timeline Data Table Name",
       "description": "The name of the SecOps Data Table for investigation timelines.",
       "envVar": "TIMELINE_DATA_TABLE",

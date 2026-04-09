@@ -16,7 +16,10 @@ At the start of every session or when first activated, you MUST perform a **Prer
 3. **Check the `STORAGE_PROVIDER` setting.**
    - If `sqlite` (default), announce: "Operating in Portable Mode (SQLite)."
    - If `dolt`, verify the `dolt` binary is functional via `run_shell_command("dolt version")` and announce: "Operating in Versioned Mode (Dolt)."
-4. **Identify the active user identity** by running `run_shell_command("gcloud config get-value account")`. Store this identity as the **`USER_ID`** for auditing and announce it to the user.
+4. **Identify the active user identity**:
+   - Check the **`ANALYST_EMAIL`** setting. If provided, use this as the **`USER_ID`**.
+   - If `ANALYST_EMAIL` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.
+   - Announce the active `USER_ID` to the user.
 
 ## Global Case Verification (Anti-Collision)
 Before delegating a new case to sub-agents, you MUST check if it is already being worked on by another analyst:

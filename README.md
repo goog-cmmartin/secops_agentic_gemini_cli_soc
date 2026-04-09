@@ -45,6 +45,7 @@ This extension uses several Google-hosted MCP servers. When you install the exte
 - **Google Cloud Project ID** (`GCP_PROJECT_ID`): The project ID where your SecOps instance and logs are located.
 - **SecOps Region** (`SECOPS_REGION`): The region for your SecOps instance (e.g., `us`).
 - **SecOps Customer ID** (`SECOPS_CUSTOMER_ID`): The UUID for your SecOps customer.
+- **Analyst Email** (`ANALYST_EMAIL`): Your official email address. If provided, this is used for case assignment and auditing. If empty, the extension will attempt to retrieve your `gcloud` identity.
 - **Timeline Data Table Name** (`TIMELINE_DATA_TABLE`): The name of the SecOps Data Table for investigation timelines (defaults to `investigation_timeline`).
 - **IOC Data Table Name** (`IOC_DATA_TABLE`): The name of the SecOps Data Table for malicious IOCs (defaults to `malicious_iocs`).
 
