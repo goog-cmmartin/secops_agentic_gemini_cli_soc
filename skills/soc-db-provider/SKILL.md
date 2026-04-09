@@ -1,28 +1,28 @@
 ---
 name: soc-db-provider
-description: Abstracts local database access for the Agentic SOC, supporting both Dolt (versioned) and SQLite (portable).
+description: Abstracts local database access for the Agentic SOC, supporting both SQLite (portable) and Dolt (versioned).
 ---
 
 # SOC Database Provider Skill
 
-This skill provides a unified interface for sub-agents to read and write to the local "System of Record" database. It dynamically handles the syntax differences between **Dolt** and **SQLite** based on the `STORAGE_PROVIDER` setting.
+This skill provides a unified interface for sub-agents to read and write to the local "System of Record" database. It dynamically handles the syntax differences between **SQLite** and **Dolt** based on the `STORAGE_PROVIDER` setting.
 
 ## Configuration Context
-- `STORAGE_PROVIDER`: (Values: `dolt`, `sqlite`) The active database backend.
+- `STORAGE_PROVIDER`: (Values: `sqlite`, `dolt`) The active database backend.
 - `DOLT_BINARY_PATH`: The path to the `dolt` binary (if using Dolt).
 
 ## Instructions for the Model
 
 ### 1. Unified SQL Execution
-When you need to perform a database action (Querying incidents, logging to the timeline, inserting IOCs), use the following logic to construct your shell command:
+When you need to perform a database action (Querying incidents, logging to the timeline, inserting IOCs), use the following logic:
 
-**If `STORAGE_PROVIDER=dolt`:**
-Use the `dolt` CLI:
-`run_shell_command("dolt sql -q \"YOUR_SQL_QUERY\"")`
-
-**If `STORAGE_PROVIDER=sqlite`:**
+**If `STORAGE_PROVIDER=sqlite` (Default / Portable Mode):**
 Use the `sqlite3` CLI. **CRITICAL:** Use the project's temporary directory for the database file to avoid cluttering the workspace:
 `run_shell_command("sqlite3 \$GEMINI_TMP_DIR/investigation.db \"YOUR_SQL_QUERY\"")`
+
+**If `STORAGE_PROVIDER=dolt` (Versioned Mode):**
+Use the `dolt` CLI:
+`run_shell_command("dolt sql -q \"YOUR_SQL_QUERY\"")`
 
 ### 2. Table Schema
 Assume the following tables are available regardless of the provider:
@@ -39,7 +39,7 @@ If you are using **Dolt** and performing a "Meta-Investigation," you should use 
 
 **Note:** If using **SQLite**, skip the branching step as it is not supported. Log directly to the main timeline.
 
-### 4. Initialization
+### 5. Initialization
 If the database file or Dolt repository doesn't exist, use the provided `schema.sql` to initialize it:
 
 **For SQLite:**
