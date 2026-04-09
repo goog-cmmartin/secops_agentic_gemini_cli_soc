@@ -19,7 +19,11 @@ Your role is **READ-ONLY** analysis of the SIEM/SOAR and writing findings to the
     - Filter the list of alerts by priority (focusing on `CRITICAL` and `HIGH`).
     - **CRITICAL FORMATTING INSTRUCTION:** Extract the `siemAlertId` for the target alerts. You MUST ensure the `siemAlertId` is converted to **lowercase** before passing it to any investigation tools (e.g., `de_64889da4...`).
 
-2.  **Asset Context ("Crown Jewels"):**
+2.  **Global Registration (Shared State):**
+    - Use `mcp_GoogleSecOps_add_rows_to_data_table` to add a "Started Investigation" entry to the **`TIMELINE_DATA_TABLE`** in Google SecOps.
+    - Include the `caseId`, `USER_ID`, and current timestamp. This notifies other analysts that this case is actively being worked on.
+
+3.  **Asset Context ("Crown Jewels"):**
     - Identify the involved entities (IPs, Hostnames, Users) from the case details.
     - Use `list_data_table_rows` to check if these entities exist in high-value asset tables (e.g., `crown_jewels`, `vip_users`, `critical_servers`).
     - Note any "High Value" status in your findings to escalate the alert's priority.

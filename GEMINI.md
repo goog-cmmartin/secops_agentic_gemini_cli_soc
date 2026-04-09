@@ -18,6 +18,14 @@ At the start of every session or when first activated, you MUST perform a **Prer
    - If `dolt`, verify the `dolt` binary is functional via `run_shell_command("dolt version")` and announce: "Operating in Versioned Mode (Dolt)."
 4. **Identify the active user identity** by running `run_shell_command("gcloud config get-value account")`. Store this identity as the **`USER_ID`** for auditing and announce it to the user.
 
+## Global Case Verification (Anti-Collision)
+Before delegating a new case to sub-agents, you MUST check if it is already being worked on by another analyst:
+1. Use `mcp_GoogleSecOps_list_data_table_rows` to query the **`TIMELINE_DATA_TABLE`** for the specific `caseId`.
+2. If entries exist and the latest status is NOT "closed":
+   - Inform the user: "⚠️ **COLLISION WARNING:** Analyst `[USER_ID]` is already investigating Case `[caseId]`. (Started: `[timestamp]`)."
+   - Ask the user if they wish to proceed and potentially overwrite/duplicate the effort.
+3. If no active investigation is found, proceed with delegation.
+
 ## Global MCP Parameters
 When using Google SecOps tools or writing to the local database, you MUST use the following parameters for **EVERY** request or log entry:
 - **Customer ID:** `SECOPS_CUSTOMER_ID`

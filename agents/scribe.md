@@ -38,20 +38,9 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
 6.  **Native Export (Google SecOps Data Tables):**
     - To ensure the investigation state is visible to the entire SOC and available for detection rules, mirror the findings to SecOps Data Tables.
     - Check for the existence of (or create) tables using the names specified in the settings: **`TIMELINE_DATA_TABLE`** and **`IOC_DATA_TABLE`**.
-    - If a table does not exist, use `create_data_table` with the following schema:
-        - **Timeline Table (`TIMELINE_DATA_TABLE`):**
-            - `incident_id` (String)
-            - `actor` (String)
-            - `action_taken` (String)
-            - `performed_by` (String - User OAuth identity)
-            - `timestamp` (String)
-        - **IOC Table (`IOC_DATA_TABLE`):**
-            - `incident_id` (String)
-            - `indicator_type` (String)
-            - `indicator_value` (String - Map to `cidr` or `regex` type where appropriate for SIEM joins)
-            - `is_malicious` (String)
-            - `performed_by` (String - User OAuth identity)
+    - If a table does not exist, use `create_data_table` with the schema defined below.
     - Use `add_rows_to_data_table` to export the final timeline and confirmed malicious indicators from your local database to these SecOps tables.
+    - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status "closed" for this `incident_id`. This releases the "Global Lock" and notifies other analysts that the investigation is complete.
 
 7.  **SOAR Synchronization & Verification:**
     - Use `create_case_comment` in SecOps to log that the formal NIST-aligned report has been generated and stored locally, and that findings have been exported to Data Tables.
