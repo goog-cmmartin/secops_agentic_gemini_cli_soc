@@ -102,6 +102,23 @@ This extension depends on several Google-hosted MCP servers. Before running the 
 }
 ```
 
+## Maintenance and Reset
+
+### Resetting Local State
+If you need to clear your local investigation history and start fresh, you can reset the database.
+
+**For SQLite (Default):**
+Simply delete the database file in your project's temporary directory. The extension will automatically re-initialize it during the next run.
+```bash
+rm $GEMINI_TMP_DIR/investigation.db
+```
+
+**For Dolt:**
+You can reset the local Dolt repository by running:
+```bash
+dolt table drop investigation_timeline iocs incidents
+```
+
 ## System Check
 
 Upon activation, the **Governor Agent** will automatically check for the presence of these MCP tools. If any are missing, it will provide instructions on how to enable them.
