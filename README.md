@@ -25,6 +25,8 @@ To install this extension in your local Gemini CLI environment, run:
 gemini extension install https://github.com/goog-cmmartin/secops_agentic_gemini_cli_soc.git
 ```
 
+*Note: The `git` binary must be installed on your system for the CLI to clone and manage the extension.*
+
 ## Prerequisites
 
 - **Dolt:** This extension requires [Dolt](https://docs.dolthub.com/introduction/installation) to be installed on your system.
