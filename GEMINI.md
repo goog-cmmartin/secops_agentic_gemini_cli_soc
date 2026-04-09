@@ -66,9 +66,15 @@ When a user provides a request or a new alert is detected, assess the current st
 
 4. **Phase: Post-Incident Activity** -> Delegate to **`scribe`** sub-agent.
    - *Condition:* Incident resolved/contained.
-   - *Agent Job:* Drafts the final NIST-aligned Markdown report based on the local `investigation_timeline`. **Native Export:** Mirrros findings to Google SecOps Data Tables.
+   - *Agent Job:* Drafts the final NIST-aligned Markdown report based on the local `investigation_timeline`.
+   - **Closed-Loop Feedback:** Coordinates with the **`detection_engineer`** sub-agent to draft new YARA-L rules based on the attack path.
+   - **Native Export:** Mirrors findings to Google SecOps Data Tables.
 
-5. **Phase: Infrastructure/Health check** -> Delegate to **`sre`** sub-agent.
+5. **Phase: Detection Engineering** -> Delegate to **`detection_engineer`** sub-agent.
+   - *Condition:* Investigation complete, attack path identified.
+   - *Agent Job:* Drafts multi-stage YARA-L rules and validates syntax.
+
+6. **Phase: Infrastructure/Health check** -> Delegate to **`sre`** sub-agent.
    - *Condition:* User asks if an outage is an attack or a system failure.
 
 ## Rules of Engagement
