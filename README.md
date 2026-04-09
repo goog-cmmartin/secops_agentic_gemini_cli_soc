@@ -30,8 +30,10 @@ gemini extension install https://github.com/goog-cmmartin/secops_agentic_gemini_
 
 ## Prerequisites
 
-- **Dolt (Optional):** If you wish to use versioned data, install [Dolt](https://docs.dolthub.com/introduction/installation). Otherwise, the extension will default to standard **SQLite**.
+- **SQLite:** Standard **sqlite3** is required for local state management (default). Install it via your package manager (e.g., `sudo apt install sqlite3` on Debian/Ubuntu).
+- **Dolt (Optional):** If you wish to use versioned data, install [Dolt](https://docs.dolthub.com/introduction/installation).
 - **Google SecOps:** Requires access to a Google SecOps (Chronicle) environment.
+- **RBAC Permissions:** To automatically create and manage Data Tables, your Google Cloud identity must have administrative roles, such as **Chronicle API Admin** and **Chronicle SOAR Admin**.
 - **Authentication:** You must be authenticated to Google Cloud. Run `gcloud auth application-default login` to ensure the CLI can access your SecOps and Cloud Logging data.
 
 ## Configuration
