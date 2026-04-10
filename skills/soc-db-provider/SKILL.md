@@ -31,7 +31,13 @@ Assume the following tables are available regardless of the provider:
 - `investigation_timeline`: `event_id`, `incident_id`, `actor`, `action_taken`, `performed_by`, `timestamp`
 
 ### 3. Auditing (Who performed the action)
-When writing to any of the tables above, you MUST include the **`USER_ID`** (retrieved by the Governor) in the **`performed_by`** column. This ensures a complete audit trail of the OAuth identity that initiated the agentic workflow.
+When writing to any of the tables above, you MUST include the **`USER_ID`** (retrieved by the Governor) in the **`performed_by`** column. 
+
+**Standardized Data Taxonomy:**
+- **Actor Format:** Use `[USER_ID]:[AGENT_NAME]` (e.g., `analyst@company.com:triage`).
+- **Status Enum:** Use only `NEW`, `TRIAGE`, `ANALYSIS`, `REMEDIATION`, `REPORTING`, `CLOSED`.
+- **Indicator Types:** Use only `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
+- **Action Taken:** Use concise, uppercase phrases (e.g., `IDENTIFIED_IOCS`).
 
 ### 4. Special Handling: Branching (Dolt Only)
 If you are using **Dolt** and performing a "Meta-Investigation," you should use branching for speculative work:

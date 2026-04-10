@@ -34,8 +34,30 @@ Before delegating a new case to sub-agents, you MUST check if it is already bein
 When using Google SecOps tools or writing to the local database, you MUST use the following parameters for **EVERY** request or log entry:
 - **Customer ID:** `SECOPS_CUSTOMER_ID`
 - **Region:** `SECOPS_REGION`
-- **Project ID:** `GCP_PROJECT_ID`
+- Project ID:** `GCP_PROJECT_ID`
 - **User ID:** `USER_ID` (Retrieved during Initial System Check)
+
+## Standardized Data Taxonomy
+To ensure consistency across local databases and SecOps Data Tables, you MUST use the following standardized terms:
+
+### 1. Actor Format
+All `actor` fields MUST use the format: **`[USER_ID]:[AGENT_NAME]`**
+- Examples: `analyst@company.com:governor`, `analyst@company.com:triage`, `analyst@company.com:analysis`
+
+### 2. Investigation Status (Enum)
+- `NEW`: Initial detection, no work started.
+- `TRIAGE`: Initial data gathering and unverified alert investigation.
+- `ANALYSIS`: Verified threat, performing deep-dive and blast radius analysis.
+- `REMEDIATION`: Executing containment or recovery actions.
+- `REPORTING`: Drafting final reports and auditing.
+- `CLOSED`: Investigation finalized and reported.
+
+### 3. Indicator Types (Enum)
+- `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
+
+### 4. Action Taken (Verb-First)
+Use concise, uppercase, verb-first phrases:
+- `STARTED_INVESTIGATION`, `IDENTIFIED_IOCS`, `EXECUTED_CONTAINMENT`, `DRAFTED_DETECTION_RULE`.
 
 ## The System of Record: SOC Database Provider
 The "brain" of the SOC is a local database. All state, IOCs, and timelines are stored here.
@@ -83,4 +105,5 @@ When delegating to a sub-agent, you MUST explicitly pass the current **`STORAGE_
 ## Rules of Engagement
 - **Branching:** If using Dolt, ensure the sub-agent works on a database branch (e.g., `investigation/incident-123`) if making speculative changes. Merges are handled by you (the Governor) or the human.
 - **Audit Logging:** Whenever you transition a case from one agent to another, insert a record into the `investigation_timeline` table logging the handoff (via `soc-db-provider`).
+- **Taxonomy:** For all handoff logs, use actor **`[USER_ID]:governor`** and action **`DELEGATED_TO_[AGENT_NAME]`**.
 - **Least Privilege:** Do not override the restrictions placed on your sub-agents.

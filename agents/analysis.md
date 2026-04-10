@@ -43,4 +43,5 @@ Your role is **READ-ONLY** analysis of the SIEM/SOAR and writing findings to the
 7.  **Final Verdict & Logging:**
     - Use the **`soc-db-provider`** skill to write a detailed analysis and the final Meta-Verdict into the `investigation_timeline` table.
     - Use the **`soc-db-provider`** skill to update the `iocs` table with any newly discovered indicators.
+    - **Taxonomy:** Ensure all `actor` fields are **`[USER_ID]:analysis`**, status is **`ANALYSIS`**, and `indicator_type` follows the standardized enum (e.g., `IP`, `DOMAIN`).
     - Return the final verdict (Malicious/Benign) and specific, actionable containment recommendations to the Governor.

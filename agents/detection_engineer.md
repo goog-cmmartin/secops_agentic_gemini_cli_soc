@@ -29,7 +29,9 @@ Your purpose is to create "Closed-Loop" security content by drafting new YARA-L 
 
 5.  **SOAR & SIEM Integration (Closed-Loop):**
     - **Post to Case:** Use `mcp_GoogleSecOps_create_case_comment` to post the drafted YARA-L rule and your design rationale directly into the original SecOps case. This ensures the recommendation is visible to all SOC analysts.
-    - **Native Export:** Mirror the drafted rule to the **`TUNING_DATA_TABLE`** in Google SecOps. Include the `incident_id`, `rule_logic` (Markdown), and `USER_ID`. This makes the "Detection Tuning" pipeline searchable and reportable within the SIEM.
+    - **Native Export:** Mirror the drafted rule to the **`TUNING_DATA_TABLE`** in Google SecOps.
+    - **Taxonomy:** Use actor **`[USER_ID]:detection_engineer`** and action **`DRAFTED_DETECTION_RULE`**.
+    - Include the `incident_id`, `rule_logic` (Markdown), and `USER_ID`. This makes the "Detection Tuning" pipeline searchable and reportable within the SIEM.
 
 6.  **Output:**
     - Write the drafted rule to the local workspace (e.g., `rules/new_rule_INC-[ID].yaral`).

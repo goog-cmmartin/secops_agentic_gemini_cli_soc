@@ -48,4 +48,5 @@ Before you execute ANY technical action (running a playbook step, manual action,
 
 7.  **Logging & Handoff:**
     - Use the **`soc-db-provider`** skill to log the final remediation decisions and results into the `investigation_timeline` table.
+    - **Taxonomy:** Use actor **`[USER_ID]:remediation`**, status **`REMEDIATION`**, and action **`EXECUTED_CONTAINMENT`** where appropriate.
     - Return a final status report to the Governor.

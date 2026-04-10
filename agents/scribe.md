@@ -44,7 +44,8 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
     - Check for the existence of (or create) tables using the names specified in the settings: **`TIMELINE_DATA_TABLE`** and **`IOC_DATA_TABLE`**.
     - If a table does not exist, use `create_data_table` with the schema defined below.
     - Use `add_rows_to_data_table` to export the final timeline and confirmed malicious indicators from your local database to these SecOps tables.
-    - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status "closed" for this `incident_id`. This releases the "Global Lock" and notifies other analysts that the investigation is complete.
+    - **Taxonomy:** Use actor **`[USER_ID]:scribe`** and status **`REPORTING`** for all export entries.
+    - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status **`CLOSED`** for this `incident_id`. This releases the "Global Lock" and notifies other analysts that the investigation is complete.
 
 8.  **SOAR Synchronization & Verification:**
     - Use `create_case_comment` in SecOps to log that the formal NIST-aligned report has been generated and stored locally, and that findings have been exported to Data Tables.
@@ -53,5 +54,5 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
         - If the verdict is **TRUE_POSITIVE** or **MALICIOUS**, do **NOT** close the case. Leave it in its current stage for final human validation and sign-off.
 
 9.  **Database Closure:**
-    - Use the **`soc-db-provider`** skill to update the incident status to 'closed' in the `incidents` table if the reporting process is complete.
+    - Use the **`soc-db-provider`** skill to update the incident status to **`CLOSED`** in the `incidents` table if the reporting process is complete.
     - Return the path of the generated report to the Governor.
