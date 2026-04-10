@@ -1,34 +1,17 @@
 # Safety Policy for Agentic SOC Extension
-# Standardized for Gemini CLI schema validation
+# Note: Extension-contributed ALLOW rules are ignored by the CLI for security.
+# This file is retained for documentation of required tools.
 
 [[rule]]
-name = "Allow Google SecOps MCP Tools"
-description = "Pre-approve all Google SecOps tools for automated investigation."
+name = "Require Approval for Google SecOps MCP Tools"
+description = "Ensures all SecOps actions are prompted for user approval by default."
 toolName = "/^mcp_GoogleSecOps_/"
-decision = "allow"
+decision = "ask_user"
 priority = 100
 
 [[rule]]
-name = "Allow Cloud Logging and Monitoring Tools"
-description = "Pre-approve infrastructure monitoring tools."
-toolName = ["/^mcp_CloudLogging_/", "/^mcp_CloudMonitoring_/"]
-decision = "allow"
-priority = 100
-
-[[rule]]
-name = "Allow Database Skill Commands"
-description = "Pre-approve the shell commands used for local state management."
+name = "Require Approval for Database Commands"
+description = "Ensures local state management commands are prompted for user approval."
 toolName = "run_shell_command"
-decision = "allow"
-priority = 100
-[rule.condition]
-type = "in-process"
-name = "command-starts-with"
-commands = ["sqlite3", "dolt", "gcloud config get-value account"]
-
-[[rule]]
-name = "Allow Developer Knowledge Tools"
-description = "Pre-approve documentation search tools."
-toolName = "/^mcp_DeveloperKnowledge_/"
-decision = "allow"
+decision = "ask_user"
 priority = 100

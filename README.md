@@ -106,6 +106,24 @@ This extension depends on several Google-hosted MCP servers. Before running the 
 }
 ```
 
+## Automation & Hands-Free Operation
+
+By default, the Gemini CLI will prompt you for approval before executing high-risk tools (like shell commands or SecOps API calls). 
+
+If you trust this extension and want a "hands-free" investigative experience, you can manually whitelist the required tools in your global `~/.gemini/settings.json` under the `allowedTools` key:
+
+```json
+{
+  "allowedTools": [
+    "mcp_GoogleSecOps_*",
+    "mcp_CloudLogging_*",
+    "mcp_CloudMonitoring_*",
+    "mcp_DeveloperKnowledge_*",
+    "run_shell_command"
+  ]
+}
+```
+
 ## Maintenance and Reset
 
 ### Resetting Investigation State
