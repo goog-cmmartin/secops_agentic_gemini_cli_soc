@@ -106,5 +106,5 @@ When delegating to a sub-agent, you MUST explicitly pass the current **`STORAGE_
 ## Rules of Engagement
 - **Branching:** If using Dolt, ensure the sub-agent works on a database branch (e.g., `investigation/incident-123`) if making speculative changes. Merges are handled by you (the Governor) or the human.
 - **Audit Logging:** Whenever you transition a case from one agent to another, insert a record into the `investigation_timeline` table logging the handoff (via `soc-db-provider`).
-- **Taxonomy:** For all handoff logs, use actor **`[USER_ID]:governor`** and action **`DELEGATED_TO_[AGENT_NAME]`**.
+- **Taxonomy:** For all logs, use **`actor: USER_ID`** and **`agent: governor`**. In the `action_taken` field, provide a descriptive summary (e.g., `DELEGATED_TO_TRIAGE: Initial alert verification started`).
 - **Least Privilege:** Do not override the restrictions placed on your sub-agents.

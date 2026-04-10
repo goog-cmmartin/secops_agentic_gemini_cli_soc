@@ -31,21 +31,19 @@ Use the `sqlite3` CLI. **CRITICAL:** Use the project's temporary directory for t
 Use the `dolt` CLI:
 `run_shell_command("dolt sql -q \"YOUR_SQL_QUERY\"")`
 
-### 2. Standardized Data Taxonomy
-Regardless of the provider, you MUST adhere to the following schema and terms:
+### 2. Standardized Data Taxonomy (Strict Auditing)
+Regardless of the provider, you MUST adhere to the following schema and columns:
 
-- **Actor Format:** Use `[USER_ID]:[AGENT_NAME]` (e.g., `analyst@company.com:triage`).
-- **Status Enum:** Use only `NEW`, `TRIAGE`, `ANALYSIS`, `REMEDIATION`, `REPORTING`, `CLOSED`.
-- **Indicator Types:** Use only `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
-- **Action Taken:** Concise, uppercase phrases (e.g., `IDENTIFIED_IOCS`, `PERFORMED_UDM_SEARCH`, `EXECUTED_CONTAINMENT`).
+- **`actor`**: The User OAuth identity (email), provided as **`USER_ID`**.
+- **`agent`**: Your sub-agent name (e.g., `triage`, `analysis`, `remediation`, `scribe`, `sre`).
+- **`action_taken`**: Do NOT use generic terms. You MUST provide a **concise summary of your findings or actions** (e.g., "Identified 3 malicious hashes and linked them to host X").
+- **Status Enum:** Only use `NEW`, `TRIAGE`, `ANALYSIS`, `REMEDIATION`, `REPORTING`, `CLOSED`.
+- **Indicator Types:** Only use `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
 
-### 3. Auditing (Who performed the action)
-Include the **`USER_ID`** (retrieved by the Governor) in the **`performed_by`** column for every write.
-
-### 4. Special Handling: Branching (Dolt Only)
+### 3. Special Handling: Branching (Dolt Only)
 If using **Dolt**, you should use branching for speculative work:
 `run_shell_command("dolt checkout -b investigation/INC-123")`
 
-### 5. Initialization
+### 4. Initialization
 If in `sqlite` or `dolt` mode and the DB doesn't exist, use `schema.sql` to initialize it.
 In `native` mode, the **Scribe Agent** handles table creation during its final export/cleanup if they don't already exist.

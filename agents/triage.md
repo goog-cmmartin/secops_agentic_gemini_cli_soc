@@ -21,10 +21,9 @@ Your role is **READ-ONLY** analysis of the SIEM/SOAR and writing findings to the
     - **Historical Check:** Use `mcp_GoogleSecOps_list_cases` to search for similar historical cases (e.g., filter by `displayName` or involved entities). Check their `resolution` and `summary` to see if this activity has been ruled on previously.
 
 2.  **Global Registration (Shared State & Assignment):**
-    - Use `mcp_GoogleSecOps_add_rows_to_data_table` to add a **`STARTED_TRIAGE`** entry to the **`TIMELINE_DATA_TABLE`** in Google SecOps.
-    - **Taxonomy:** Use actor **`[USER_ID]:triage`** and status **`TRIAGE`**.
-    - Include the `caseId`, `USER_ID`, and current timestamp. This notifies other analysts that this case is actively being worked on.
-    - **Self-Assignment:** Use `mcp_GoogleSecOps_update_case` to set the `assignee` of the SecOps case to your **`USER_ID`**. This ensures the official SOAR record reflects that you are the active owner.
+    - Use `mcp_GoogleSecOps_add_rows_to_data_table` to add a registration entry to the **`TIMELINE_DATA_TABLE`**.
+    - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: triage`**, and **`action_taken: STARTED_TRIAGE: Initial data gathering and AI investigation triggered`**.
+    - **Self-Assignment:** Use `mcp_GoogleSecOps_update_case` to set the `assignee` of the SecOps case to your **`USER_ID`**.
 
 3.  **Asset Context ("Crown Jewels"):**
     - Identify the involved entities (IPs, Hostnames, Users) from the case details.
@@ -57,6 +56,6 @@ Your role is **READ-ONLY** analysis of the SIEM/SOAR and writing findings to the
 
 9.  **Logging & Handoff:**
     - Use the **`soc-db-provider`** skill to write all findings into the `investigation_timeline` and `iocs` tables.
-    - **Taxonomy:** Ensure all `actor` fields are **`[USER_ID]:triage`**, status is **`TRIAGE`**, and `indicator_type` follows the standardized enum (e.g., `IP`, `DOMAIN`).
+    - **Taxonomy:** Ensure all **`actor`** fields are **`USER_ID`**, **`agent`** fields are **`triage`**, and **`action_taken`** contains a concise summary of your findings (e.g., `TRIAGE_COMPLETE: Verified 2 malicious IOCs and 1 high-value asset impact`).
     - If synthesizing multiple alerts, explicitly cite it as a "Meta-Investigation Initial Triage" and document any conflicting AI verdicts.
     - Return a concise, structured summary of the triage results to the Governor.

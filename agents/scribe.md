@@ -44,7 +44,7 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
     - Check for the existence of (or create) tables using the names specified in the settings: **`TIMELINE_DATA_TABLE`** and **`IOC_DATA_TABLE`**.
     - If a table does not exist, use `create_data_table` with the schema defined below.
     - Use `add_rows_to_data_table` to export the final timeline and confirmed malicious indicators from your local database to these SecOps tables.
-    - **Taxonomy:** Use actor **`[USER_ID]:scribe`** and status **`REPORTING`** for all export entries.
+    - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: scribe`**, and **`action_taken: GENERATED_NIST_REPORT: Finalized investigation summary and exported all findings to SIEM`**.
     - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status **`CLOSED`** for this `incident_id`. This releases the "Global Lock" and notifies other analysts that the investigation is complete.
 
 8.  **SOAR Synchronization & Verification:**

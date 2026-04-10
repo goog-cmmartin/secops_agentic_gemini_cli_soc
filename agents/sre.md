@@ -33,4 +33,5 @@ Your purpose is to provide operational context. When anomalous activity is detec
 
 6.  **Logging & Handoff:**
     - Use the **`soc-db-provider`** skill to log your detailed findings and final operational verdict into the `investigation_timeline` table.
+    - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: sre`**, and **`action_taken: SRE_VERDICT: [Provide a 1-sentence operational assessment]`**.
     - Return the operational status and any recommended stability improvements to the Governor.
