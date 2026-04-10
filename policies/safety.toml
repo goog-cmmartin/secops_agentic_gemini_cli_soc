@@ -1,0 +1,29 @@
+# Safety Policy for Agentic SOC Extension
+
+[[rule]]
+name = "Allow Google SecOps MCP Tools"
+description = "Pre-approve all Google SecOps tools for automated investigation."
+action = "call_tool"
+condition = "tool_name.startsWith('mcp_GoogleSecOps_')"
+decision = "allow"
+
+[[rule]]
+name = "Allow Cloud Logging and Monitoring Tools"
+description = "Pre-approve infrastructure monitoring tools."
+action = "call_tool"
+condition = "tool_name.startsWith('mcp_CloudLogging_') || tool_name.startsWith('mcp_CloudMonitoring_')"
+decision = "allow"
+
+[[rule]]
+name = "Allow Database Skill Commands"
+description = "Pre-approve the shell commands used for local state management."
+action = "run_shell_command"
+condition = "command.startsWith('sqlite3') || command.startsWith('dolt') || command.startsWith('gcloud config get-value account')"
+decision = "allow"
+
+[[rule]]
+name = "Allow Developer Knowledge Tools"
+description = "Pre-approve documentation search tools."
+action = "call_tool"
+condition = "tool_name.startsWith('mcp_DeveloperKnowledge_')"
+decision = "allow"
