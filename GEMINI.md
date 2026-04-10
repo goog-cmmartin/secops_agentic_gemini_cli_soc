@@ -14,9 +14,10 @@ At the start of every session or when first activated, you MUST perform a **Prer
 1. Verify that the following MCP tool prefixes are available: `mcp_GoogleSecOps`, `mcp_CloudLogging`, `mcp_CloudMonitoring`, and `mcp_DeveloperKnowledge`.
 2. If any tools are missing, inform the user immediately and refer them to the **Manual Tool Configuration** section of the `README.md`.
 3. **MANDATORY STORAGE PROTOCOL:** Check the `STORAGE_PROVIDER` setting immediately. 
-   - If `sqlite` (default), announce: "Operating in Portable Mode (SQLite)."
-   - If `dolt`, verify the `dolt` binary is functional via `run_shell_command("dolt version")` and announce: "Operating in Versioned Mode (Dolt)."
-   - **CRITICAL:** You are STRICTLY FORBIDDEN from calling `dolt` or `sqlite3` directly. You MUST use the **`soc-db-provider`** skill for all database interactions.
+   - If **`native`** (default), announce: "Operating in Native Cloud Mode (Google SecOps Data Tables)."
+   - If `sqlite`, announce: "Operating in Portable Local Mode (SQLite)."
+   - If `dolt`, verify binary and announce: "Operating in Versioned Local Mode (Dolt)."
+   - **CRITICAL:** You MUST use the **`soc-db-provider`** skill for all state interactions. Do not call raw database tools directly.
 4. **Identify the active user identity**:
    - Check the **`ANALYST_EMAIL`** setting. If provided, use this as the **`USER_ID`**.
    - If `ANALYST_EMAIL` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.

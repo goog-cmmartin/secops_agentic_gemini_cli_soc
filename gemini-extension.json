@@ -1,15 +1,15 @@
 {
   "name": "agentic-soc",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Governor Agent for orchestrating security investigations in an Agentic SOC using NIST framework and a local database.",
   "contextFileName": "GEMINI.md",
   "policy": "policies/safety.toml",
   "settings": [
     {
       "name": "Storage Provider",
-      "description": "The local storage backend for investigation state (sqlite or dolt).",
+      "description": "The local storage backend for investigation state (native, sqlite, or dolt).",
       "envVar": "STORAGE_PROVIDER",
-      "default": "sqlite"
+      "default": "native"
     },
     {
       "name": "Dolt Binary Path",
