@@ -48,6 +48,12 @@
       "description": "The name of the SecOps Data Table for malicious IOCs.",
       "envVar": "IOC_DATA_TABLE",
       "default": "malicious_iocs"
+    },
+    {
+      "name": "Detection Tuning Data Table Name",
+      "description": "The name of the SecOps Data Table for drafted YARA-L rules.",
+      "envVar": "TUNING_DATA_TABLE",
+      "default": "detection_tuning"
     }
   ]
 }
