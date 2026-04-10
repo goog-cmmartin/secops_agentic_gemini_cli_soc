@@ -41,8 +41,27 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
 
 7.  **Native Export (Google SecOps Data Tables):**
     - To ensure the investigation state is visible to the entire SOC and available for detection rules, mirror the findings to SecOps Data Tables.
-    - Check for the existence of (or create) tables using the names specified in the settings: **`TIMELINE_DATA_TABLE`** and **`IOC_DATA_TABLE`**.
-    - If a table does not exist, use `create_data_table` with the schema defined below.
+    - Check for the existence of (or create) tables using the names specified in the settings: **`TIMELINE_DATA_TABLE`**, **`IOC_DATA_TABLE`**, and **`TUNING_DATA_TABLE`**.
+    - If a table does not exist, use `create_data_table` with the following schema:
+        - **Timeline Table (`TIMELINE_DATA_TABLE`):**
+            - `incident_id` (String)
+            - `action_taken` (String)
+            - `actor` (String - User email)
+            - `agent` (String - Sub-agent name)
+            - `timestamp` (String)
+        - **IOC Table (`IOC_DATA_TABLE`):**
+            - `incident_id` (String)
+            - `indicator_type` (String)
+            - `indicator_value` (String)
+            - `is_malicious` (String)
+            - `actor` (String)
+            - `agent` (String)
+        - **Tuning Table (`TUNING_DATA_TABLE`):**
+            - `incident_id` (String)
+            - `rule_logic` (String)
+            - `rationale` (String)
+            - `actor` (String)
+            - `agent` (String)
     - Use `add_rows_to_data_table` to export the final timeline and confirmed malicious indicators from your local database to these SecOps tables.
     - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: scribe`**, and **`action_taken: GENERATED_NIST_REPORT: Finalized investigation summary and exported all findings to SIEM`**.
     - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status **`CLOSED`** for this `incident_id`. This releases the "Global Lock" and notifies other analysts that the investigation is complete.

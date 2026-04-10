@@ -28,10 +28,15 @@ Your purpose is to create "Closed-Loop" security content by drafting new YARA-L 
     - Use `mcp_GoogleSecOps_validate_rule` to ensure the drafted syntax is valid for Google SecOps.
 
 5.  **SOAR & SIEM Integration (Closed-Loop):**
-    - **Post to Case:** Use `mcp_GoogleSecOps_create_case_comment` to post the drafted YARA-L rule and your design rationale directly into the original SecOps case. This ensures the recommendation is visible to all SOC analysts.
+    - **Audit Log:** Use the **`soc-db-provider`** skill to log your activity to the `investigation_timeline` table. Use **`action_taken: DRAFTED_DETECTION_RULE: Created multi-stage YARA-L logic based on attack path`**.
+    - **Post to Case:** Use `mcp_GoogleSecOps_create_case_comment` to post the drafted YARA-L rule and your design rationale directly into the original SecOps case.
     - **Native Export:** Mirror the drafted rule to the **`TUNING_DATA_TABLE`** in Google SecOps.
-    - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: detection_engineer`**, and **`action_taken: DRAFTED_DETECTION_RULE: Created multi-stage YARA-L logic based on attack path`**.
-    - **Mandatory Real-Time Write:** You MUST use `mcp_GoogleSecOps_add_rows_to_data_table` to write the drafted rule logic to the **`TUNING_DATA_TABLE`** before completing your task.
+    - **Schema:** Use `mcp_GoogleSecOps_add_rows_to_data_table` with the following columns:
+        - `incident_id`: The ID of the investigation.
+        - `rule_logic`: The full YARA-L code.
+        - `rationale`: A summary of why this logic was chosen.
+        - `actor`: **`USER_ID`**.
+        - `agent`: `detection_engineer`.
 
 6.  **Output:**
     - Write the drafted rule to the local workspace (e.g., `rules/new_rule_INC-[ID].yaral`).
