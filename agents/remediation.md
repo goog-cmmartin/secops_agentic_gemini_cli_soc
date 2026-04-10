@@ -44,9 +44,11 @@ Before you execute ANY technical action (running a playbook step, manual action,
 
 6.  **Action Verification & SOAR Updates:**
     - Use `get_case` to verify the case stage has been updated or `update_case` to transition it to "Incident" or "Improvement."
-    - Add a final comment to the case via `create_case_comment` summarizing the remediation choice made by the analyst.
 
-7.  **Logging & Handoff:**
+7.  **SOAR Documentation:**
+    - Use `mcp_GoogleSecOps_create_case_comment` to add a final comment to the case summarizing the remediation choice made and the results of the action.
+
+8.  **Logging & Handoff:**
     - Use the **`soc-db-provider`** skill to log the final remediation decisions and results into the `investigation_timeline` table.
     - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: remediation`**, and **`action_taken: EXECUTED_REMEDIATION: User approved and triggered [Action Name] on [Entity]`**.
     - Return a final status report to the Governor.

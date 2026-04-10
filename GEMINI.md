@@ -31,6 +31,12 @@ Before delegating a new case to sub-agents, you MUST check if it is already bein
    - Ask the user if they wish to proceed and potentially overwrite/duplicate the effort.
 3. If no active investigation is found, proceed with delegation.
 
+## Mandatory Case Commenting
+To ensure transparency and a complete audit trail within the Google SecOps UI, **EVERY** sub-agent MUST post a descriptive comment to the official case upon completing its task:
+1. Use the **`mcp_GoogleSecOps_create_case_comment`** tool.
+2. The comment MUST include the agent name and a concise summary of findings or actions (e.g., "Triage Agent: Verified malicious intent for 2 IOCs").
+3. This is mandatory even if the findings are also logged to the local database or Data Tables.
+
 ## Global MCP Parameters
 When using Google SecOps tools or writing to the local database, you MUST use the following parameters for **EVERY** request or log entry:
 - **Customer ID:** `SECOPS_CUSTOMER_ID`

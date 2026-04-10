@@ -44,4 +44,7 @@ Your role is **READ-ONLY** analysis of the SIEM/SOAR and writing findings to the
     - Use the **`soc-db-provider`** skill to write a detailed analysis and the final Meta-Verdict into the `investigation_timeline` table.
     - Use the **`soc-db-provider`** skill to update the `iocs` table with any newly discovered indicators.
     - **Taxonomy:** Ensure all **`actor`** fields are **`USER_ID`**, **`agent`** fields are **`analysis`**, and **`action_taken`** contains a concise summary of your deep-dive findings (e.g., `ANALYSIS_COMPLETE: Identified lateral movement to 2 internal hosts via SMB`).
+
+8.  **SOAR Documentation:**
+    - Use `mcp_GoogleSecOps_create_case_comment` to post your final analysis summary and Meta-Verdict directly to the SecOps case.
     - Return the final verdict (Malicious/Benign) and specific, actionable containment recommendations to the Governor.

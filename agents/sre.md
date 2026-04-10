@@ -34,4 +34,7 @@ Your purpose is to provide operational context. When anomalous activity is detec
 6.  **Logging & Handoff:**
     - Use the **`soc-db-provider`** skill to log your detailed findings and final operational verdict into the `investigation_timeline` table.
     - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: sre`**, and **`action_taken: SRE_VERDICT: [Provide a 1-sentence operational assessment]`**.
+
+7.  **SOAR Documentation:**
+    - Use `mcp_GoogleSecOps_create_case_comment` to post your final operational verdict and rationale directly to the SecOps case.
     - Return the operational status and any recommended stability improvements to the Governor.

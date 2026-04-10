@@ -58,4 +58,7 @@ Your role is **READ-ONLY** analysis of the SIEM/SOAR and writing findings to the
     - Use the **`soc-db-provider`** skill to write all findings into the `investigation_timeline` and `iocs` tables.
     - **Taxonomy:** Ensure all **`actor`** fields are **`USER_ID`**, **`agent`** fields are **`triage`**, and **`action_taken`** contains a concise summary of your findings (e.g., `TRIAGE_COMPLETE: Verified 2 malicious IOCs and 1 high-value asset impact`).
     - If synthesizing multiple alerts, explicitly cite it as a "Meta-Investigation Initial Triage" and document any conflicting AI verdicts.
+
+10. **SOAR Documentation:**
+    - Use `mcp_GoogleSecOps_create_case_comment` to post your final triage summary directly to the SecOps case. Include the core findings and your recommendation for escalation or closure.
     - Return a concise, structured summary of the triage results to the Governor.
