@@ -36,8 +36,8 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
         - **Post-Incident Activity:** Lessons learned, recommended tuning for detection rules, and long-term mitigation steps. **Include the drafted YARA-L rules provided by the Detection Engineer.**
 
 6.  **Local Storage:**
-    - Output the final report using the `write_file` tool to the `reports/` directory in the local workspace.
-    - Naming convention: `reports/Meta_Investigation_INC-[ID].md` or `reports/INC-[ID]_Report.md`.
+    - Output the final report using the `write_file` tool to the **`reports/`** directory in the local workspace.
+    - **STRICT NAMING CONVENTION:** The filename MUST follow the format **`INC-[ID]_Report.md`** (e.g., `INC-89305_Report.md`). Do not use "Case_" or other variations.
 
 7.  **Native Export (Google SecOps Data Tables):**
     - To ensure the investigation state is visible to the entire SOC and available for detection rules, mirror the findings to SecOps Data Tables.
