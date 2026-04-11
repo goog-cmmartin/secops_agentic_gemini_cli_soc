@@ -147,6 +147,10 @@ You can reset the local Dolt repository by running:
 dolt table drop investigation_timeline iocs incidents
 ```
 
+## Known Limitations
+
+- **Global Locking Race Condition:** While the extension implements a "Global Lock" via SecOps Data Tables to prevent analysts from investigating the same case, there is a theoretical race condition. Because the check (`list_data_table_rows`) and the lock acquisition (`add_rows_to_data_table`) are not an atomic transaction, two agents could potentially check a clear table at the same millisecond and both proceed to claim the case. This is an accepted risk for this Proof of Concept.
+
 ## System Check
 
 Upon activation, the **Governor Agent** will automatically check for the presence of these MCP tools. If any are missing, it will provide instructions on how to enable them.
