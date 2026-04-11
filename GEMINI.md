@@ -105,10 +105,17 @@ When delegating to a sub-agent, you MUST explicitly pass the current **`STORAGE_
    - **Native Export:** Mirrors findings to Google SecOps Data Tables.
 
 5. **Phase: Detection Engineering** -> Delegate to **`detection_engineer`** sub-agent.
-   - *Condition:* Investigation complete, attack path identified.
+   - *Condition:* Investigation complete, attack path identified (True Positive).
    - *Agent Job:* Drafts multi-stage YARA-L rules and validates syntax.
 
-6. **Phase: Infrastructure/Health check** -> Delegate to **`sre`** sub-agent.
+6. **Phase: Closed-Loop Tuning (False Positives)** -> Delegate to **`detection_engineer`** sub-agent.
+   - *Condition:* Alert/Case verified as a **FALSE_POSITIVE** or **BENIGN** by the `analysis` or `triage` agent.
+   - *Agent Job:* 
+     1. Extract the "noise fingerprint" (e.g., the benign IP, safe URL, authorized user, or vulnerability scanner IP).
+     2. Use the `soc-db-provider` skill to log this exclusion into the **`TUNING_DATA_TABLE`**.
+     3. Generate the precise YARA-L suppression syntax (e.g., `not re.regex($e.target.url, ...)` or a `reference_list` exclusion).
+
+7. **Phase: Infrastructure/Health check** -> Delegate to **`sre`** sub-agent.
    - *Condition:* User asks if an outage is an attack or a system failure.
 
 ## Rules of Engagement

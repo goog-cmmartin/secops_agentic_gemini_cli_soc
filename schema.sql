@@ -38,3 +38,17 @@ CREATE TABLE investigation_timeline (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (incident_id) REFERENCES incidents(incident_id)
 );
+
+CREATE TABLE detection_tuning (
+    tuning_id VARCHAR(255) PRIMARY KEY,
+    incident_id VARCHAR(255) NOT NULL,
+    rule_name VARCHAR(255) NOT NULL,
+    exclusion_type VARCHAR(50) NOT NULL, -- e.g., 'URL_PATH_REGEX', 'SAFE_IP_CIDR'
+    exclusion_value TEXT NOT NULL,
+    rule_logic TEXT, -- The proposed YARA-L snippet
+    reasoning TEXT,
+    actor VARCHAR(255),
+    agent VARCHAR(100),
+    date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (incident_id) REFERENCES incidents(incident_id)
+);

@@ -11,6 +11,7 @@ This skill provides a unified interface for sub-agents to read and write investi
 - `STORAGE_PROVIDER`: (Values: `native`, `sqlite`, `dolt`) MUST be used to determine the backend. Do not search for files or binaries.
 - `TIMELINE_DATA_TABLE`: Name of the shared SecOps timeline table.
 - `IOC_DATA_TABLE`: Name of the shared SecOps IOC table.
+- `TUNING_DATA_TABLE`: Name of the shared SecOps tuning/suppression table.
 
 ## Instructions for the Model
 
@@ -22,6 +23,7 @@ Do NOT use local shell commands. You MUST document your activity by calling the 
 - **CONCURRENCY:** Google SecOps Data Tables automatically handle concurrent writes; no retry logic is required.
 - **To Log Activity:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`TIMELINE_DATA_TABLE`**.
 - **To Register IOCs:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`IOC_DATA_TABLE`**.
+- **To Propose Tuning:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`TUNING_DATA_TABLE`**.
 - **To Read Context:** Use `mcp_GoogleSecOps_list_data_table_rows` with a filter for the `incident_id`.
 
 **If `STORAGE_PROVIDER=sqlite` (Portable Local Mode):**
@@ -37,10 +39,11 @@ Use the `dolt` CLI:
 Regardless of the provider, you MUST adhere to the following schema and columns:
 
 - **`actor`**: The User OAuth identity (email), provided as **`USER_ID`**.
-- **`agent`**: Your sub-agent name (e.g., `triage`, `analysis`, `remediation`, `scribe`, `sre`).
+- **`agent`**: Your sub-agent name (e.g., `triage`, `analysis`, `remediation`, `scribe`, `sre`, `detection_engineer`).
 - **`action_taken`**: Do NOT use generic terms. You MUST provide a **concise summary of your findings or actions** (e.g., "Identified 3 malicious hashes and linked them to host X").
 - **Status Enum:** Only use `NEW`, `TRIAGE`, `ANALYSIS`, `REMEDIATION`, `REPORTING`, `CLOSED`.
 - **Indicator Types:** Only use `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
+- **Exclusion Types:** Only use `URL_PATH_REGEX`, `SAFE_IP_CIDR`, `AUTHORIZED_USER`, `TRUSTED_DOMAIN`.
 
 ### 3. Special Handling: Branching (Dolt Only)
 If using **Dolt**, you should use branching for speculative work:
