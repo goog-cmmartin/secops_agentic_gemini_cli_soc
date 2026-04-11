@@ -5,17 +5,17 @@ description: Abstracts database access for the Agentic SOC, supporting Native Se
 
 # SOC Database Provider Skill
 
-This skill provides a unified interface for sub-agents to read and write investigation state. It dynamically handles the syntax differences between **Google SecOps Data Tables**, **SQLite**, and **Dolt** based on the `STORAGE_PROVIDER` setting.
+This skill provides a unified interface for sub-agents to read and write investigation state. It dynamically handles the syntax differences based on the **`STORAGE_PROVIDER`** environment variable, which is your **SINGLE SOURCE OF TRUTH**. 
 
 ## Configuration Context
-- `STORAGE_PROVIDER`: (Values: `native`, `sqlite`, `dolt`) The active database backend.
+- `STORAGE_PROVIDER`: (Values: `native`, `sqlite`, `dolt`) MUST be used to determine the backend. Do not search for files or binaries.
 - `TIMELINE_DATA_TABLE`: Name of the shared SecOps timeline table.
 - `IOC_DATA_TABLE`: Name of the shared SecOps IOC table.
 
 ## Instructions for the Model
 
 ### 1. Unified State Interaction
-When you need to log an action, insert an IOC, or query investigation history, use the following logic:
+Read the value of the **`STORAGE_PROVIDER`** environment variable before every interaction. Do not guess.
 
 **If `STORAGE_PROVIDER=native` (Default / Cloud-Native Mode):**
 Do NOT use local shell commands. You MUST document your activity by calling the Google SecOps MCP tools directly for EVERY write.
