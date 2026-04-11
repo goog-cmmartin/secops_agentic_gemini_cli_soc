@@ -15,7 +15,7 @@ At the start of every session, you MUST check if the sentinel **`[SYSTEM_CHECK_C
 - If the sentinel IS NOT found, you MUST perform the **Prerequisite Check**:
   1. Verify that the following MCP tool prefixes are available: `mcp_GoogleSecOps`, `mcp_CloudLogging`, `mcp_CloudMonitoring`, and `mcp_DeveloperKnowledge`.
   2. If any tools are missing, inform the user immediately and refer them to the **Manual Tool Configuration** section of the `README.md`.
-  3. **MANDATORY STORAGE PROTOCOL:** Read the **`STORAGE_PROVIDER`** environment variable. 
+  3. **MANDATORY STORAGE PROTOCOL:** Read the **`STORAGE_PROVIDER`** environment variable. This is your SINGLE SOURCE OF TRUTH. 
      - If **`native`** (default), announce: "Operating in Native Cloud Mode (Google SecOps Data Tables)."
      - If `sqlite`, announce: "Operating in Portable Local Mode (SQLite)."
      - If `dolt`, verify binary and announce: "Operating in Versioned Local Mode (Dolt)."
@@ -24,7 +24,8 @@ At the start of every session, you MUST check if the sentinel **`[SYSTEM_CHECK_C
      - Check the **`ANALYST_EMAIL`** setting. If provided, use this as the **`USER_ID`**.
      - If `ANALYST_EMAIL` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.
      - Announce the active `USER_ID` to the user.
-  5. **Emit the Sentinel:** End your check with the literal string **`[SYSTEM_CHECK_COMPLETE]`** to memoize this state.
+  5. **Session Isolation:** Generate a unique **`SESSION_ID`** for the current investigation (e.g., a short UUID or timestamp like `20260410-XYZ`). This ID MUST be used to namespace all database and Data Table entries to prevent cross-talk in shared environments.
+  6. **Emit the Sentinel:** End your check with the literal string **`[SYSTEM_CHECK_COMPLETE]`** to memoize this state.
 
 ## Global Case Verification (Anti-Collision)
 Before delegating a new case to sub-agents, you MUST check if it is already being worked on by another analyst:
@@ -33,6 +34,7 @@ Before delegating a new case to sub-agents, you MUST check if it is already bein
    - Inform the user: "⚠️ **COLLISION WARNING:** Analyst `[USER_ID]` is already investigating Case `[caseId]`. (Started: `[timestamp]`)."
    - Ask the user if they wish to proceed and potentially overwrite/duplicate the effort.
 3. If no active investigation is found, proceed with delegation.
+4. **Performance Tracking:** Initialize the investigation in the `incidents` table using `soc-db-provider`. Set the `start_time` to current timestamp and `step_count` to 1.
 
 ## Mandatory Case Commenting
 To ensure transparency and a complete audit trail within the Google SecOps UI, **EVERY** sub-agent MUST post a descriptive comment to the official case upon completing its task:
@@ -44,8 +46,9 @@ To ensure transparency and a complete audit trail within the Google SecOps UI, *
 When using Google SecOps tools or writing to the local database, you MUST use the following parameters for **EVERY** request or log entry:
 - **Customer ID:** `SECOPS_CUSTOMER_ID`
 - **Region:** `SECOPS_REGION`
-- Project ID:** `GCP_PROJECT_ID`
+- **Project ID:** `GCP_PROJECT_ID`
 - **User ID:** `USER_ID` (Retrieved during Initial System Check)
+- **Session ID:** `SESSION_ID` (Generated during Initial System Check)
 
 ## Standardized Data Taxonomy
 To ensure consistency across local databases and SecOps Data Tables, you MUST use the following standardized terms:
@@ -54,7 +57,10 @@ To ensure consistency across local databases and SecOps Data Tables, you MUST us
 All `actor` fields MUST use the format: **`[USER_ID]:[AGENT_NAME]`**
 - Examples: `analyst@company.com:governor`, `analyst@company.com:triage`, `analyst@company.com:analysis`
 
-### 2. Investigation Status (Enum)
+### 2. Session Isolation
+Every write operation MUST include the **`SESSION_ID`**. Every read/query operation MUST filter by the current **`SESSION_ID`** to ensure you are only interacting with the current analyst's session data.
+
+### 3. Investigation Status (Enum)
 - `NEW`: Initial detection, no work started.
 - `TRIAGE`: Initial data gathering and unverified alert investigation.
 - `ANALYSIS`: Verified threat, performing deep-dive and blast radius analysis.
@@ -62,14 +68,14 @@ All `actor` fields MUST use the format: **`[USER_ID]:[AGENT_NAME]`**
 - `REPORTING`: Drafting final reports and auditing.
 - `CLOSED`: Investigation finalized and reported.
 
-### 3. Indicator Types (Enum)
+### 4. Indicator Types (Enum)
 - `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
 
-### 4. Action Taken (Verb-First)
+### 5. Action Taken (Verb-First)
 Use concise, uppercase, verb-first phrases:
 - `STARTED_INVESTIGATION`, `IDENTIFIED_IOCS`, `EXECUTED_CONTAINMENT`, `DRAFTED_DETECTION_RULE`.
 
-### 5. Time Format (ISO 8601 UTC)
+### 6. Time Format (ISO 8601 UTC)
 To ensure professional consistency across all reports and Data Tables, you MUST use the following format for ALL timestamps:
 - **`YYYY-MM-DDTHH:MM:SSZ`** (e.g., `2026-04-10T14:30:00Z`).
 - Do NOT use epoch/unix timestamps in user-facing fields.
@@ -79,9 +85,9 @@ The "brain" of the SOC is a local database. All state, IOCs, and timelines are s
 **Use the `soc-db-provider` skill** to read and update state. This skill automatically handles the differences between Dolt and SQLite based on the `STORAGE_PROVIDER` setting.
 
 Tables available:
-- `incidents`: `incident_id`, `title`, `severity`, `status`, `resolution`, `summary`, `performed_by`, `created_at`, `updated_at`
-- `iocs`: `ioc_id`, `incident_id`, `indicator_type`, `indicator_value`, `is_malicious`, `performed_by`, `first_seen`
-- `investigation_timeline`: `event_id`, `incident_id`, `actor`, `action_taken`, `performed_by`, `timestamp`
+- `incidents`: `incident_id`, `session_id`, `title`, `severity`, `status`, `resolution`, `summary`, `actor`, `agent`, `start_time`, `end_time`, `duration_sec`, `step_count`, `created_at`, `updated_at`
+- `iocs`: `ioc_id`, `incident_id`, `session_id`, `indicator_type`, `indicator_value`, `is_malicious`, `actor`, `agent`, `first_seen`
+- `investigation_timeline`: `event_id`, `incident_id`, `session_id`, `action_taken`, `actor`, `agent`, `timestamp`
 
 ## Meta-Investigations (Multi-Alert Cases)
 When a SOAR Case contains multiple alerts, you must orchestrate a **Meta-Investigation**:
@@ -132,4 +138,3 @@ When delegating to a sub-agent, you MUST explicitly pass the current **`STORAGE_
 - **Performance:** For every delegation to a sub-agent, increment the **`step_count`** in the `incidents` table for the current `incident_id`.
 - **Taxonomy:** For all logs, use **`actor: USER_ID`** and **`agent: governor`**. In the `action_taken` field, provide a descriptive summary (e.g., `DELEGATED_TO_TRIAGE: Initial alert verification started`).
 - **Least Privilege:** Do not override the restrictions placed on your sub-agents.
-ns placed on your sub-agents.

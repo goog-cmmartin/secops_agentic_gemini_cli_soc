@@ -2,6 +2,7 @@
 
 CREATE TABLE incidents (
     incident_id VARCHAR(255) PRIMARY KEY,
+    session_id VARCHAR(255) NOT NULL, -- Unique ID for the current analysis session
     title TEXT NOT NULL,
     severity VARCHAR(50),
     status VARCHAR(50) DEFAULT 'NEW', -- e.g., 'NEW', 'TRIAGE', 'ANALYSIS', 'CLOSED'
@@ -20,6 +21,7 @@ CREATE TABLE incidents (
 CREATE TABLE iocs (
     ioc_id VARCHAR(255) PRIMARY KEY,
     incident_id VARCHAR(255) NOT NULL,
+    session_id VARCHAR(255) NOT NULL, -- Namespace for multi-tenancy
     indicator_type VARCHAR(50) NOT NULL, -- e.g., 'IP', 'DOMAIN', 'HASH_SHA256'
     indicator_value VARCHAR(255) NOT NULL,
     is_malicious BOOLEAN DEFAULT FALSE,
@@ -32,6 +34,7 @@ CREATE TABLE iocs (
 CREATE TABLE investigation_timeline (
     event_id VARCHAR(255) PRIMARY KEY,
     incident_id VARCHAR(255) NOT NULL,
+    session_id VARCHAR(255) NOT NULL, -- Namespace for multi-tenancy
     action_taken TEXT NOT NULL, -- Detailed summary of activity
     actor VARCHAR(255) NOT NULL, -- The User OAuth identity (email)
     agent VARCHAR(100) NOT NULL, -- The agent performing the action (e.g., 'triage', 'analysis')
@@ -42,6 +45,7 @@ CREATE TABLE investigation_timeline (
 CREATE TABLE detection_tuning (
     tuning_id VARCHAR(255) PRIMARY KEY,
     incident_id VARCHAR(255) NOT NULL,
+    session_id VARCHAR(255) NOT NULL, -- Namespace for multi-tenancy
     rule_name VARCHAR(255) NOT NULL,
     exclusion_type VARCHAR(50) NOT NULL, -- e.g., 'URL_PATH_REGEX', 'SAFE_IP_CIDR'
     exclusion_value TEXT NOT NULL,
