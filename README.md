@@ -10,6 +10,7 @@ This is a custom Gemini CLI extension that implements the **Governor Agent** for
     - **SQLite:** Portable local SQL database.
     - **Dolt:** Versioned and branchable local SQL database.
 - **Performance Metrics:** Automatically calculates investigation **Runtime** and **Agent Step Count** to measure SOC efficiency.
+- **Surfaced Benchmarking:** Explicitly displays investigation efficiency metrics in the final summary to the user for easy SOC performance tracking.
 - **Optimized Startup:** Uses memoization to skip redundant system checks in long-running sessions, reducing latency and token usage.
 - **NIST Alignment:** Orchestrates investigations across Preparation, Detection & Analysis, Containment, Eradication & Recovery, and Post-Incident phases.
 - **Sub-Agent Delegation:** Includes pre-defined sub-agents: `triage`, `analysis`, `remediation`, `scribe`, `detection_engineer`, and `sre`.

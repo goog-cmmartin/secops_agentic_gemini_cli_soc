@@ -85,7 +85,11 @@ Before performing ANY investigation or database action, you MUST:
         - If the final verdict is clearly a **FALSE_POSITIVE**, use `execute_bulk_close_case` to formally resolve the SecOps case with the reason `NOT_MALICIOUS`.
         - If the verdict is **TRUE_POSITIVE** or **MALICIOUS**, do **NOT** close the case. Leave it in its current stage for final human validation and sign-off.
 
-9.  **Database Closure:**
-    - Use the **`soc-db-provider`** skill to update the incident status to **`CLOSED`** in the `incidents` table if the reporting process is complete.
+9.  **Database Closure & Benchmarking:**
+    - Use the **`soc-db-provider`** skill to update the incident status to **`CLOSED`** in the `incidents` table.
     - **Final Audit:** Set the `end_time` to current timestamp and save the final `duration_sec` calculation.
-    - Return the path of the generated report to the Governor.
+    - **Efficiency Benchmarking:** You MUST return a formatted **Performance Summary** to the Governor, including:
+        - **Total Runtime:** [X] seconds
+        - **Agent Step Count:** [Y] interactions
+        - **Report Path:** [Path]
+    - Return this summary as your final response.
