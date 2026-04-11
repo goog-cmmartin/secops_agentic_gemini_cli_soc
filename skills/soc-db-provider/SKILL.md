@@ -18,22 +18,21 @@ This skill provides a unified interface for sub-agents to read and write investi
 ### 1. Unified State Interaction
 Read the value of the **`STORAGE_PROVIDER`** environment variable before every interaction. Do not guess.
 
-**If `STORAGE_PROVIDER=native` (Default / Cloud-Native Mode):**
-Do NOT use local shell commands. You MUST document your activity by calling the Google SecOps MCP tools directly for EVERY write.
-- **CONCURRENCY:** Google SecOps Data Tables automatically handle concurrent writes; no retry logic is required.
-- **To Log Activity:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`TIMELINE_DATA_TABLE`**.
-- **To Register IOCs:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`IOC_DATA_TABLE`**.
-- **To Propose Tuning:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`TUNING_DATA_TABLE`**.
-- **To Read Context:** Use `mcp_GoogleSecOps_list_data_table_rows` with a filter for the `incident_id`.
-
 **If `STORAGE_PROVIDER=sqlite` (Portable Local Mode):**
 Use the `sqlite3` CLI. **CRITICAL:** Use the project's temporary directory for the database file.
-- **CONCURRENCY SAFETY:** If you receive a "database is locked" error (common when agents run in parallel), you MUST wait 2 seconds and retry the command (up to 3 times).
+- **CONCURRENCY LIMITATION:** SQLite is a single-user format and does NOT support concurrent writes from multiple processes or agents. 
+- **ERROR HANDLING:** If you receive a "database is locked" error, wait 2 seconds and retry the command. If it fails after 3 retries, inform the Governor of a local resource conflict.
 `run_shell_command("sqlite3 \$GEMINI_TMP_DIR/investigation.db \"YOUR_SQL_QUERY\"")`
 
 **If `STORAGE_PROVIDER=dolt` (Versioned Local Mode):**
-Use the `dolt` CLI:
+Use the `dolt` CLI.
+- **CONCURRENCY:** Supports concurrent reads, but simultaneous writes to the same branch may result in blocked commits or conflicts.
 `run_shell_command("dolt sql -q \"YOUR_SQL_QUERY\"")`
+
+**If `STORAGE_PROVIDER=native` (Default / Cloud-Native Mode):**
+Do NOT use local shell commands. You MUST document your activity by calling the Google SecOps MCP tools directly for EVERY write.
+- **SHARED STATE:** This is the ONLY mode recommended for concurrent multi-analyst collaboration. Google SecOps Data Tables handle concurrent writes natively at the API level.
+- **To Log Activity:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`TIMELINE_DATA_TABLE`**.
 
 ### 2. Standardized Data Taxonomy (Strict Auditing)
 Regardless of the provider, you MUST adhere to the following schema and columns:

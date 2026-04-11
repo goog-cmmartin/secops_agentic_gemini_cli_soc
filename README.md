@@ -150,6 +150,7 @@ dolt table drop investigation_timeline iocs incidents
 ## Known Limitations
 
 - **Global Locking Race Condition:** While the extension implements a "Global Lock" via SecOps Data Tables to prevent analysts from investigating the same case, there is a theoretical race condition. Because the check (`list_data_table_rows`) and the lock acquisition (`add_rows_to_data_table`) are not an atomic transaction, two agents could potentially check a clear table at the same millisecond and both proceed to claim the case. This is an accepted risk for this Proof of Concept.
+- **Local Database Concurrency:** The `sqlite` and `dolt` storage providers are intended for local, single-session use. SQLite, in particular, does not support concurrent writes from multiple processes. If you attempt to run parallel investigations using a local provider, you may encounter "database is locked" errors. **Native Cloud Mode** is the only mode recommended for true multi-analyst collaboration.
 
 ## System Check
 
