@@ -12,6 +12,7 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
 
 1.  **Comprehensive Data Retrieval:**
     - Use the **`soc-db-provider`** skill to query the local database (`investigation_timeline`, `iocs`, `incidents`) for the specified incident ID.
+    - **Performance Metrics:** Calculate the total runtime by subtracting `start_time` from the current timestamp. Retrieve the final `step_count` from the `incidents` table.
     - Use `get_case` to retrieve official SecOps case metadata, tags, and involved products.
     - Use `list_case_comments` to fetch all official analyst notes and the case's historical investigation trail.
 
@@ -34,6 +35,7 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
         - **Detection and Analysis:** Detailed investigation findings, AI verdicts, and deep-dive UDM search results.
         - **Containment, Eradication, and Recovery:** A summary of all remediation actions (manual and automated).
         - **Post-Incident Activity:** Lessons learned, recommended tuning for detection rules, and long-term mitigation steps. **Include the drafted YARA-L rules provided by the Detection Engineer.**
+        - **Performance Metrics:** Document the total **Runtime (seconds)** and **Agent Step Count** to measure investigation efficiency.
 
 6.  **Local Storage:**
     - Output the final report using the `write_file` tool to the **`reports/`** directory in the local workspace.
@@ -55,4 +57,5 @@ Your purpose is to draft the final, NIST-aligned Markdown report summarizing the
 
 9.  **Database Closure:**
     - Use the **`soc-db-provider`** skill to update the incident status to **`CLOSED`** in the `incidents` table if the reporting process is complete.
+    - **Final Audit:** Set the `end_time` to current timestamp and save the final `duration_sec` calculation.
     - Return the path of the generated report to the Governor.

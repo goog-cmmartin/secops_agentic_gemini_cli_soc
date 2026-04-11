@@ -9,6 +9,10 @@ CREATE TABLE incidents (
     summary TEXT,
     actor VARCHAR(255), -- The User OAuth identity (email)
     agent VARCHAR(100), -- The agent that performed the last update
+    start_time TIMESTAMP, -- When the investigation began
+    end_time TIMESTAMP, -- When the report was finalized
+    duration_sec INT, -- Total runtime in seconds
+    step_count INT DEFAULT 0, -- Total number of agent handoffs/interactions
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
