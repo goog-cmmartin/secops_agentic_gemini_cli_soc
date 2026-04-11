@@ -1,17 +1,34 @@
 # Safety Policy for Agentic SOC Extension
 # Note: Extension-contributed ALLOW rules are ignored by the CLI for security.
-# This file is retained for documentation of required tools.
+# This file is used to define the required security posture for the SOC agents.
 
+# Ensures all SecOps actions are prompted for user approval by default.
 [[rule]]
-name = "Require Approval for Google SecOps MCP Tools"
-description = "Ensures all SecOps actions are prompted for user approval by default."
-toolName = "/^mcp_GoogleSecOps_/"
+mcpName = "GoogleSecOps"
 decision = "ask_user"
 priority = 100
 
+# Ensures all Cloud Logging actions are prompted for user approval by default.
 [[rule]]
-name = "Require Approval for Database Commands"
-description = "Ensures local state management commands are prompted for user approval."
+mcpName = "CloudLogging"
+decision = "ask_user"
+priority = 100
+
+# Ensures all Cloud Monitoring actions are prompted for user approval by default.
+[[rule]]
+mcpName = "CloudMonitoring"
+decision = "ask_user"
+priority = 100
+
+# Ensures all Developer Knowledge actions are prompted for user approval by default.
+[[rule]]
+mcpName = "DeveloperKnowledge"
+decision = "ask_user"
+priority = 100
+
+# Ensures local state management and identity lookup commands are prompted for user approval.
+[[rule]]
 toolName = "run_shell_command"
+argsPattern = '"command":"(sqlite3|dolt|gcloud)'
 decision = "ask_user"
 priority = 100
