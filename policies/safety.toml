@@ -1,38 +1,31 @@
 # Safety Policy for Agentic SOC Extension
-# Note: Extension-contributed ALLOW rules are ignored by the CLI for security.
-# This file is used to define the required security posture for the SOC agents.
+# NOTE: These rules are set to "ask_user", which FORCES a prompt.
+# If you want a hands-free experience, remove these rules and use the 
+# global "allowedTools" list in your ~/.gemini/settings.json instead.
 
-# Ensures all SecOps actions are prompted for user approval by default.
+# Forces approval for Google SecOps MCP Tools
 [[rule]]
 mcpName = "GoogleSecOps"
 toolName = "*"
 decision = "ask_user"
 priority = 100
 
-# Ensures all Cloud Logging actions are prompted for user approval by default.
+# Forces approval for Cloud Logging and Monitoring Tools
 [[rule]]
 mcpName = "CloudLogging"
 toolName = "*"
 decision = "ask_user"
 priority = 100
 
-# Ensures all Cloud Monitoring actions are prompted for user approval by default.
 [[rule]]
 mcpName = "CloudMonitoring"
 toolName = "*"
 decision = "ask_user"
 priority = 100
 
-# Ensures all Developer Knowledge actions are prompted for user approval by default.
-[[rule]]
-mcpName = "DeveloperKnowledge"
-toolName = "*"
-decision = "ask_user"
-priority = 100
-
-# Ensures local state management and identity lookup commands are prompted for user approval.
+# Forces approval for local state and identity commands
 [[rule]]
 toolName = "run_shell_command"
-argsPattern = '"command":"(sqlite3|dolt|gcloud)'
+argsPattern = '.*"command":"(sqlite3|dolt|gcloud|env).*'
 decision = "ask_user"
 priority = 100

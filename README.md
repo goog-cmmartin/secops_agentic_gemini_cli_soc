@@ -109,9 +109,11 @@ This extension depends on several Google-hosted MCP servers. Before running the 
 
 ## Automation & Hands-Free Operation
 
-By default, the Gemini CLI will prompt you for approval before executing high-risk tools (like shell commands or SecOps API calls). 
+By default, this extension includes a safety policy that **forces** an approval prompt for high-risk actions (SecOps API calls, shell commands). 
 
-If you trust this extension and want a "hands-free" investigative experience, you can manually whitelist the required tools in your global `~/.gemini/settings.json` under the `allowedTools` key:
+If you want a truly "hands-free" experience without prompts:
+1.  **Remove** the `[[rule]]` blocks from the installed extension's `policies/safety.toml`.
+2.  **Add** the following to your global `~/.gemini/settings.json` under the `allowedTools` key:
 
 ```json
 {
