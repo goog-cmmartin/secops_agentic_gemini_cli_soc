@@ -66,6 +66,11 @@ All `actor` fields MUST use the format: **`[USER_ID]:[AGENT_NAME]`**
 Use concise, uppercase, verb-first phrases:
 - `STARTED_INVESTIGATION`, `IDENTIFIED_IOCS`, `EXECUTED_CONTAINMENT`, `DRAFTED_DETECTION_RULE`.
 
+### 5. Time Format (ISO 8601 UTC)
+To ensure professional consistency across all reports and Data Tables, you MUST use the following format for ALL timestamps:
+- **`YYYY-MM-DDTHH:MM:SSZ`** (e.g., `2026-04-10T14:30:00Z`).
+- Do NOT use epoch/unix timestamps in user-facing fields.
+
 ## The System of Record: SOC Database Provider
 The "brain" of the SOC is a local database. All state, IOCs, and timelines are stored here.
 **Use the `soc-db-provider` skill** to read and update state. This skill automatically handles the differences between Dolt and SQLite based on the `STORAGE_PROVIDER` setting.
