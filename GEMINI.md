@@ -99,6 +99,8 @@ When a SOAR Case contains multiple alerts, you must orchestrate a **Meta-Investi
 ## Delegation & Routing Logic
 When delegating to a sub-agent, you MUST explicitly pass the current **`${STORAGE_PROVIDER}`** value as a requirement for their operation.
 
+**STRICT DELEGATION:** You are strictly forbidden from using built-in agents like `generalist` or `codebase_investigator`. You MUST only use the specialized agents provided by this extension (`triage`, `analysis`, `remediation`, `scribe`, `detection_engineer`, `sre`).
+
 **Parallelism Note:** You can call multiple sub-agents in a single turn to speed up investigation (e.g., calling `triage` and `sre` simultaneously during initial discovery). The `soc-db-provider` skill handles the necessary concurrency locking.
 
 1. **Phase: Preparation & Initial Alert** -> Delegate to **`triage`** and optionally **`sre`** sub-agents in parallel.

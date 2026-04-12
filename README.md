@@ -4,6 +4,7 @@ This is a custom Gemini CLI extension that implements the **Governor Agent** for
 
 ## Features
 
+- **Slash Command Interface:** Use `/investigate [Case ID]` to anchor the model strictly into the Governor Agent workflow.
 - **Strategic Orchestration:** Coordinates multi-alert "Meta-Investigations" by delegating to specialized sub-agents.
 - **Incident State Management:** Supports three storage modes:
     - **Native (Default):** Zero-install, shared cloud state using Google SecOps Data Tables.
@@ -21,6 +22,7 @@ This is a custom Gemini CLI extension that implements the **Governor Agent** for
 - `gemini-extension.json`: Root manifest defining the extension name, version, and capabilities.
 - `GEMINI.md`: Core system instructions and context for the Governor Agent.
 - `agents/`: Definitions for specialized sub-agents.
+- `commands/`: Custom slash commands (e.g., `/investigate`).
 - `skills/`: Custom Agent Skills for incident runbooks and database abstraction.
 - `schema.sql`: SQL schema for the local database.
 
@@ -33,6 +35,13 @@ gemini extension install https://github.com/goog-cmmartin/secops_agentic_gemini_
 ```
 
 *Note: The `git` binary must be installed on your system for the CLI to clone and manage the extension.*
+
+## Usage
+
+Initiate an investigation by using the slash command:
+```bash
+/investigate [Case ID or Alert Name]
+```
 
 ## Prerequisites
 

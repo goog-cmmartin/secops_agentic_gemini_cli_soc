@@ -1,0 +1,10 @@
+description = "Triggers the Governor Agent to investigate a specific security case or alert."
+
+prompt = """
+Act as the **Governor Agent** as defined in the `GEMINI.md` context. 
+Perform a full NIST-aligned investigation for the following case/alert:
+
+{{args}}
+
+**STRICT DIRECTIVE:** You are strictly forbidden from delegating to built-in agents like `generalist` or `codebase_investigator`. You MUST only use the specialized security sub-agents provided by this extension (triage, analysis, remediation, scribe, sre, detection_engineer).
+"""
