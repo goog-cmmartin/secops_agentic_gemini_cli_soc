@@ -36,17 +36,18 @@ Read the value of the **`STORAGE_PROVIDER`** and **`SESSION_ID`** environment va
 
 **If `STORAGE_PROVIDER=native` (Default / Cloud-Native Mode):**
 Do NOT use local shell commands for storage. You MUST document your activity by calling the Google SecOps MCP tools directly for EVERY write.
+- **NO GUESSING:** You are STRICTLY FORBIDDEN from using hardcoded table names like `investigation_timeline` or `malicious_iocs`. You MUST use the EXACT values provided in the **`TIMELINE_DATA_TABLE`**, **`IOC_DATA_TABLE`**, and **`TUNING_DATA_TABLE`** environment variables.
 - **STRICT COLUMN ORDERING:** You MUST follow the exact column order defined below in your JSON payload. 
 
-- **To Log Activity:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`${TIMELINE_DATA_TABLE}`**.
+- **To Log Activity:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting the table name in **`TIMELINE_DATA_TABLE`**.
   **Mandatory JSON Template:**
   ```json
   {
-    "session_id": "${SESSION_ID}",
+    "session_id": "SESSION_ID",
     "event_id": "[SESSION_ID]-[AGENT]-01",
     "incident_id": "89667",
     "timestamp": "[RESULT_OF_DATE_COMMAND]",
-    "actor": "${USER_ID}",
+    "actor": "USER_ID",
     "agent": "your_agent_name",
     "action_taken": "Your concise summary",
     "duration_sec": "0",
@@ -54,26 +55,26 @@ Do NOT use local shell commands for storage. You MUST document your activity by 
   }
   ```
 
-- **To Register IOCs:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`${IOC_DATA_TABLE}`**.
+- **To Register IOCs:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting the table name in **`IOC_DATA_TABLE`**.
   **Mandatory JSON Template:**
   ```json
   {
-    "session_id": "${SESSION_ID}",
+    "session_id": "SESSION_ID",
     "ioc_id": "[SESSION_ID]-[AGENT]-IOC-01",
     "incident_id": "89667",
     "indicator_type": "IP",
     "indicator_value": "1.2.3.4",
     "is_malicious": "TRUE",
-    "actor": "${USER_ID}",
+    "actor": "USER_ID",
     "agent": "your_agent_name"
   }
   ```
 
-- **To Propose Tuning:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`${TUNING_DATA_TABLE}`**.
+- **To Propose Tuning:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting the table name in **`TUNING_DATA_TABLE`**.
   **Mandatory JSON Template:**
   ```json
   {
-    "session_id": "${SESSION_ID}",
+    "session_id": "SESSION_ID",
     "tuning_id": "[SESSION_ID]-[AGENT]-TUNE-01",
     "incident_id": "89667",
     "rule_name": "RuleName",
@@ -81,12 +82,12 @@ Do NOT use local shell commands for storage. You MUST document your activity by 
     "exclusion_value": "ExclusionValue",
     "rule_logic": "YARA-L Snippet",
     "rationale": "Your rationale",
-    "actor": "${USER_ID}",
+    "actor": "USER_ID",
     "agent": "your_agent_name"
   }
   ```
 
-- **To Read Context:** Use `mcp_GoogleSecOps_list_data_table_rows` with a filter for the **`incident_id` AND `${SESSION_ID}`**.
+- **To Read Context:** Use `mcp_GoogleSecOps_list_data_table_rows` with a filter for the **`incident_id` AND `SESSION_ID`**.
 
 **If `STORAGE_PROVIDER=sqlite` (Portable Local Mode):**
 Use the `sqlite3` CLI. **CRITICAL:** Use the project's temporary directory for the database file:
@@ -101,9 +102,9 @@ Use the `dolt` CLI:
 ### 5. Standardized Data Taxonomy (Strict Auditing)
 Regardless of the provider, you MUST adhere to the following schema and columns:
 
-- **`actor`**: The User OAuth identity (email), provided as **`${USER_ID}`**.
+- **`actor`**: The User OAuth identity (email), provided as **`USER_ID`**.
 - **`agent`**: Your sub-agent name (e.g., `triage`, `analysis`, `remediation`, `scribe`, `sre`, `detection_engineer`).
-- **`session_id`**: The unique namespace for the current investigation, provided as **`${SESSION_ID}`**.
+- **`session_id`**: The unique namespace for the current investigation, provided as **`SESSION_ID`**.
 - **`action_taken`**: Do NOT use generic terms. You MUST provide a **concise summary of your findings or actions**.
 - **Status Enum:** Only use `NEW`, `TRIAGE`, `ANALYSIS`, `REMEDIATION`, `REPORTING`, `CLOSED`.
 - **Indicator Types:** Only use `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
@@ -111,8 +112,8 @@ Regardless of the provider, you MUST adhere to the following schema and columns:
 - **Time Format:** You MUST use ISO 8601 UTC format (**`YYYY-MM-DDTHH:MM:SSZ`**) for every timestamp.
 
 ### 6. Auditing & Multi-Tenancy
-- **Identification:** Include the **`${USER_ID}`** in the **`actor`** column for every write.
-- **Namespacing:** Include the **`${SESSION_ID}`** in the **`session_id`** column for every write. Every query MUST filter by `session_id`.
+- **Identification:** Include the **`USER_ID`** in the **`actor`** column for every write.
+- **Namespacing:** Include the **`SESSION_ID`** in the **`session_id`** column for every write. Every query MUST filter by `session_id`.
 
 ### 7. Special Handling: Branching (Dolt Only)
 If using **Dolt**, you should use branching for speculative work:

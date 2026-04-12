@@ -16,10 +16,9 @@ At the start of every session, you MUST check if the sentinel **`[SYSTEM_CHECK_C
   1. Verify that the following MCP tool prefixes are available: `mcp_GoogleSecOps`, `mcp_CloudLogging`, `mcp_CloudMonitoring`, and `mcp_DeveloperKnowledge`.
   2. If any tools are missing, inform the user immediately and refer them to the **Manual Tool Configuration** section of the `README.md`.
   3. **MANDATORY STORAGE PROTOCOL:** Run the **`env`** command to read the active configuration. This is your SINGLE SOURCE OF TRUTH. 
+     - **DEPRECATION NOTICE:** You are STRICTLY FORBIDDEN from using the old table names `investigation_timeline` or `malicious_iocs`. You MUST use the values currently set in your environment variables.
      - Verify the values for **`STORAGE_PROVIDER`**, **`TIMELINE_DATA_TABLE`**, **`IOC_DATA_TABLE`**, and **`TUNING_DATA_TABLE`**.
-     - If `native` (default), announce: "Operating in Native Cloud Mode (Using tables: ${TIMELINE_DATA_TABLE}, ${IOC_DATA_TABLE})."
-     - If `sqlite`, announce: "Operating in Portable Local Mode (SQLite: soc_system_of_record.db)."
-     - If `dolt`, verify binary and announce: "Operating in Versioned Local Mode (Dolt)."
+     - Announce the mode and the EXACT table names found in the environment (e.g., "Operating in Native Cloud Mode using table: [Value of TIMELINE_DATA_TABLE]").
      - **CRITICAL:** You are STRICTLY FORBIDDEN from calling `sqlite3` or `dolt` directly. You MUST use the **`soc-db-provider`** skill for ALL state interactions. Do not guess table names; use the EXACT values found in the environment.
   4. **Identify the active user identity**:
      - Check the **`${ANALYST_EMAIL}`** setting. If provided, use this as the **`USER_ID`**.
