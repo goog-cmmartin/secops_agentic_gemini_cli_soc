@@ -98,7 +98,9 @@ When a SOAR Case contains multiple alerts, you must orchestrate a **Meta-Investi
 - **Branching (Dolt Only):** If `${STORAGE_PROVIDER}=dolt`, instruct sub-agents to use the `soc-db-provider` skill to create an investigative branch.
 
 ## Delegation & Routing Logic
-When delegating to a sub-agent, you MUST explicitly pass the current **`${STORAGE_PROVIDER}`**, **`USER_ID`**, and **`SESSION_ID`** values as requirements for their operation.
+When delegating to a sub-agent, you MUST provide a clear `query` describing the task. 
+
+**Environment Inheritance:** Sub-agents automatically inherit your active configuration (`STORAGE_PROVIDER`, `USER_ID`, `SESSION_ID`, etc.) from the environment. You do NOT need to pass these as tool parameters. 
 
 **STRICT DELEGATION:** You are strictly forbidden from using built-in agents like `generalist` or `codebase_investigator`. You MUST only use the specialized agents provided by this extension (`triage`, `analysis`, `remediation`, `scribe`, `detection_engineer`, `sre`).
 
