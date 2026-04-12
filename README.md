@@ -154,6 +154,13 @@ dolt table drop investigation_timeline iocs incidents
 - **Global Locking Race Condition:** While the extension implements a "Global Lock" via SecOps Data Tables to prevent analysts from investigating the same case, there is a theoretical race condition. Because the check (`list_data_table_rows`) and the lock acquisition (`add_rows_to_data_table`) are not an atomic transaction, two agents could potentially check a clear table at the same millisecond and both proceed to claim the case. This is an accepted risk for this Proof of Concept.
 - **Local Database Concurrency:** The `sqlite` and `dolt` storage providers are intended for local, single-session use. SQLite, in particular, does not support concurrent writes from multiple processes. If you attempt to run parallel investigations using a local provider, you may encounter "database is locked" errors. **Native Cloud Mode** is the only mode recommended for true multi-analyst collaboration.
 
+## Workspace Isolation vs. Cloud Continuity
+
+The choice of `STORAGE_PROVIDER` significantly impacts how the SOC maintains its state across different directories or terminals:
+
+- **Local Modes (SQLite/Dolt):** These modes use the CLI's workspace-specific temporary directory (`$GEMINI_TMP_DIR`). If you run the extension from a different folder, the agent will initialize a **new, empty database**. This is ideal for isolating private investigations but prevents continuity across different workspaces.
+- **Native Cloud Mode:** Because state is stored centrally in **Google SecOps Data Tables**, your investigation history is **globally shared**. You can switch terminals or machines and maintain perfect continuity, as long as you use the same SecOps configuration.
+
 ## System Check
 
 Upon activation, the **Governor Agent** will automatically check for the presence of these MCP tools. If any are missing, it will provide instructions on how to enable them.
