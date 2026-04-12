@@ -19,7 +19,7 @@ CREATE TABLE incidents (
 );
 
 CREATE TABLE iocs (
-    ioc_id VARCHAR(255) PRIMARY KEY,
+    ioc_id VARCHAR(255) PRIMARY KEY, -- Format: [SESSION_ID]-[AGENT]-IOC-[SEQ]
     incident_id VARCHAR(255) NOT NULL,
     session_id VARCHAR(255) NOT NULL, -- Namespace for multi-tenancy
     indicator_type VARCHAR(50) NOT NULL, -- e.g., 'IP', 'DOMAIN', 'HASH_SHA256'
@@ -32,7 +32,7 @@ CREATE TABLE iocs (
 );
 
 CREATE TABLE investigation_timeline (
-    event_id VARCHAR(255) PRIMARY KEY,
+    event_id VARCHAR(255) PRIMARY KEY, -- Format: [SESSION_ID]-[AGENT]-[SEQ]
     incident_id VARCHAR(255) NOT NULL,
     session_id VARCHAR(255) NOT NULL, -- Namespace for multi-tenancy
     action_taken TEXT NOT NULL, -- Detailed summary of activity
@@ -43,7 +43,7 @@ CREATE TABLE investigation_timeline (
 );
 
 CREATE TABLE detection_tuning (
-    tuning_id VARCHAR(255) PRIMARY KEY,
+    tuning_id VARCHAR(255) PRIMARY KEY, -- Format: [SESSION_ID]-[AGENT]-TUNE-[SEQ]
     incident_id VARCHAR(255) NOT NULL,
     session_id VARCHAR(255) NOT NULL, -- Namespace for multi-tenancy
     rule_name VARCHAR(255) NOT NULL,

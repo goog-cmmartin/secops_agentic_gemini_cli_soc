@@ -16,13 +16,19 @@ This skill provides a unified interface for sub-agents to read and write investi
 
 ## Instructions for the Model
 
-### 1. Real-Time Clock Anchoring
+### 1. Unified ID Generation (MANDATORY)
+To ensure each record is globally unique and searchable, you MUST use the following format for all Primary Keys (`event_id`, `ioc_id`, `tuning_id`):
+- **Format:** `[SESSION_ID]-[AGENT_NAME]-[SEQUENCE]`
+- **Examples:** `20260412-89667-TRIAGE-01`, `20260412-89667-ANALYSIS-05`.
+- Start the sequence at `01` for each new agent session.
+
+### 2. Real-Time Clock Anchoring
 To ensure an accurate and professional timeline, you MUST NOT guess the current time. 
 **MANDATORY:** Before every write operation (database or Data Table), you MUST run the following command to get the official UTC timestamp:
 `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`
 Use the output of this command as the value for all `timestamp` fields.
 
-### 2. Unified State Interaction
+### 3. Unified State Interaction
 Read the value of the **`STORAGE_PROVIDER`** and **`SESSION_ID`** environment variables before every interaction. 
 
 **If `STORAGE_PROVIDER=native` (Default / Cloud-Native Mode):**
@@ -34,6 +40,7 @@ Do NOT use local shell commands for storage. You MUST document your activity by 
   ```json
   {
     "session_id": "SESSION_ID",
+    "event_id": "[SESSION_ID]-[AGENT]-01",
     "incident_id": "INC-XXXXX",
     "timestamp": "[RESULT_OF_DATE_COMMAND]",
     "actor": "USER_ID",
@@ -49,6 +56,7 @@ Do NOT use local shell commands for storage. You MUST document your activity by 
   ```json
   {
     "session_id": "SESSION_ID",
+    "ioc_id": "[SESSION_ID]-[AGENT]-IOC-01",
     "incident_id": "INC-XXXXX",
     "indicator_type": "IP",
     "indicator_value": "1.2.3.4",
@@ -63,6 +71,7 @@ Do NOT use local shell commands for storage. You MUST document your activity by 
   ```json
   {
     "session_id": "SESSION_ID",
+    "tuning_id": "[SESSION_ID]-[AGENT]-TUNE-01",
     "incident_id": "INC-XXXXX",
     "rule_name": "RuleName",
     "exclusion_type": "ExclusionType",
@@ -86,7 +95,7 @@ Use the `sqlite3` CLI. **CRITICAL:** Use the project's temporary directory for t
 Use the `dolt` CLI:
 `run_shell_command("dolt sql -q \"YOUR_SQL_QUERY\"")`
 
-### 3. Standardized Data Taxonomy (Strict Auditing)
+### 4. Standardized Data Taxonomy (Strict Auditing)
 Regardless of the provider, you MUST adhere to the following schema and columns:
 
 - **`actor`**: The User OAuth identity (email), provided as **`USER_ID`**.
@@ -96,16 +105,16 @@ Regardless of the provider, you MUST adhere to the following schema and columns:
 - **Status Enum:** Only use `NEW`, `TRIAGE`, `ANALYSIS`, `REMEDIATION`, `REPORTING`, `CLOSED`.
 - **Indicator Types:** Only use `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
 - **Exclusion Types:** Only use `URL_PATH_REGEX`, `SAFE_IP_CIDR`, `AUTHORIZED_USER`, `TRUSTED_DOMAIN`.
-- **Time Format:** You MUST use the result of the **`date`** command mentioned in Section 1.
+- **Time Format:** You MUST use the result of the **`date`** command mentioned in Section 2.
 
-### 4. Auditing & Multi-Tenancy
+### 5. Auditing & Multi-Tenancy
 - **Identification:** Include the **`USER_ID`** in the **`actor`** column for every write.
 - **Namespacing:** Include the **`SESSION_ID`** in the **`session_id`** column for every write. Every query MUST filter by `session_id`.
 
-### 5. Special Handling: Branching (Dolt Only)
+### 6. Special Handling: Branching (Dolt Only)
 If using **Dolt**, you should use branching for speculative work:
 `run_shell_command("dolt checkout -b investigation/INC-123")`
 
-### 6. Initialization
+### 7. Initialization
 If in `sqlite` or `dolt` mode and the DB doesn't exist, use `schema.sql` to initialize it.
 In `native` mode, the **Scribe Agent** handles table creation during its final export/cleanup if they don't already exist.
