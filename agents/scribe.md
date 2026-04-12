@@ -53,25 +53,28 @@ Before performing ANY investigation or database action, you MUST:
     - Check for the existence of (or create) tables using the EXACT names from the environment variables.
     - If a table does not exist, use `create_data_table` with the following schema:
         - **Timeline Table (`${TIMELINE_DATA_TABLE}`):**
-            - `incident_id` (String)
             - `session_id` (String)
-            - `action_taken` (String)
+            - `incident_id` (String)
+            - `timestamp` (String)
             - `actor` (String - User email)
             - `agent` (String - Sub-agent name)
+            - `action_taken` (String)
             - `duration_sec` (String)
             - `step_count` (String)
-            - `timestamp` (String)
         - **IOC Table (`${IOC_DATA_TABLE}`):**
-            - `incident_id` (String)
             - `session_id` (String)
+            - `incident_id` (String)
             - `indicator_type` (String)
             - `indicator_value` (String)
             - `is_malicious` (String)
             - `actor` (String)
             - `agent` (String)
         - **Tuning Table (`${TUNING_DATA_TABLE}`):**
-            - `incident_id` (String)
             - `session_id` (String)
+            - `incident_id` (String)
+            - `rule_name` (String)
+            - `exclusion_type` (String)
+            - `exclusion_value` (String)
             - `rule_logic` (String)
             - `rationale` (String)
             - `actor` (String)

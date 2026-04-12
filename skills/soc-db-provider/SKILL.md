@@ -20,11 +20,55 @@ This skill provides a unified interface for sub-agents to read and write investi
 Read the value of the **`STORAGE_PROVIDER`** and **`SESSION_ID`** environment variables before every interaction. 
 
 **If `STORAGE_PROVIDER=native` (Default / Cloud-Native Mode):**
-Do NOT use local shell commands. You MUST document your activity by calling the Google SecOps MCP tools directly for EVERY write:
-- **To Log Activity:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`TIMELINE_DATA_TABLE`**. Include the `SESSION_ID`.
-- **To Register IOCs:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`IOC_DATA_TABLE`**. Include the `SESSION_ID`.
-- **To Propose Tuning:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`TUNING_DATA_TABLE`**. Include the `SESSION_ID`.
-- **To Read Context:** Use `mcp_GoogleSecOps_list_data_table_rows` with a filter for the **`incident_id` AND `session_id`**.
+Do NOT use local shell commands. You MUST document your activity by calling the Google SecOps MCP tools directly for EVERY write.
+- **STRICT COLUMN ORDERING:** You MUST follow the exact column order defined below in your JSON payload. Mismatched ordering will result in corrupted data.
+
+- **To Log Activity:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`${TIMELINE_DATA_TABLE}`**.
+  **Mandatory JSON Template:**
+  ```json
+  {
+    "session_id": "${SESSION_ID}",
+    "incident_id": "INC-XXXXX",
+    "timestamp": "YYYY-MM-DDTHH:MM:SSZ",
+    "actor": "${USER_ID}",
+    "agent": "your_agent_name",
+    "action_taken": "Your concise summary",
+    "duration_sec": "0",
+    "step_count": "0"
+  }
+  ```
+
+- **To Register IOCs:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`${IOC_DATA_TABLE}`**.
+  **Mandatory JSON Template:**
+  ```json
+  {
+    "session_id": "${SESSION_ID}",
+    "incident_id": "INC-XXXXX",
+    "indicator_type": "IP",
+    "indicator_value": "1.2.3.4",
+    "is_malicious": "TRUE",
+    "actor": "${USER_ID}",
+    "agent": "your_agent_name"
+  }
+  ```
+
+- **To Propose Tuning:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`${TUNING_DATA_TABLE}`**.
+  **Mandatory JSON Template:**
+  ```json
+  {
+    "session_id": "${SESSION_ID}",
+    "incident_id": "INC-XXXXX",
+    "rule_name": "RuleName",
+    "exclusion_type": "ExclusionType",
+    "exclusion_value": "ExclusionValue",
+    "rule_logic": "YARA-L Snippet",
+    "reasoning": "Your rationale",
+    "actor": "${USER_ID}",
+    "agent": "your_agent_name"
+  }
+  ```
+
+- **To Read Context:** Use `mcp_GoogleSecOps_list_data_table_rows` with a filter for the **`incident_id` AND `${SESSION_ID}`**.
 
 **If `STORAGE_PROVIDER=sqlite` (Portable Local Mode):**
 Use the `sqlite3` CLI. **CRITICAL:** Use the project's temporary directory for the database file.

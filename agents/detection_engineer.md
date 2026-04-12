@@ -35,8 +35,17 @@ Your purpose is to create "Closed-Loop" security content by drafting new YARA-L 
 5.  **SOAR & SIEM Integration (Closed-Loop):**
     - **Audit Log:** Use the **`soc-db-provider`** skill to log your activity to the `investigation_timeline` table. Use **`action_taken: DRAFTED_TUNING_SUGGESTION`**.
     - **Post to Case:** Use `mcp_GoogleSecOps_create_case_comment` to post your drafted logic and rationale directly into the original SecOps case.
-    - **Native Export:** Mirror the recommendation to the **`TUNING_DATA_TABLE`** in Google SecOps.
-    - **Schema:** Use `mcp_GoogleSecOps_add_rows_to_data_table` with columns: `incident_id`, `session_id`, `rule_name`, `exclusion_type`, `exclusion_value`, `rule_logic`, `reasoning`, `actor`, `agent`.
+    - **Native Export:** Mirror the recommendation to the **`${TUNING_DATA_TABLE}`** in Google SecOps.
+    - **Schema:** Use `mcp_GoogleSecOps_add_rows_to_data_table` with the following column order:
+        - `session_id`: **`${SESSION_ID}`**.
+        - `incident_id`: The ID of the investigation.
+        - `rule_name`: The exact name of the rule.
+        - `exclusion_type`: The type of tuning.
+        - `exclusion_value`: The criteria to ignore.
+        - `rule_logic`: The full YARA-L logic.
+        - `rationale`: A summary of your rationale.
+        - `actor`: **`${USER_ID}`**.
+        - `agent`: `detection_engineer`.
 
 6.  **Output:**
     - Return the drafted logic and a summary of your rationale to the Scribe.
