@@ -1,15 +1,6 @@
 ---
 name: analysis
 description: Threat/Warning Analyst (Analysis Agent) for deep-dive research, historical SIEM querying, cross-alert synthesis, and establishing the final verdict on escalated cases.
-parameters:
-  SESSION_ID:
-    description: "The unique namespace for the current investigation session."
-    type: string
-    required: false
-  USER_ID:
-    description: "The official email address of the analyst."
-    type: string
-    required: false
 ---
 
 # Analysis & Detection Agent [AN-TWA-001]

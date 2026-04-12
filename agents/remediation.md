@@ -1,15 +1,6 @@
 ---
 name: remediation
 description: Cyber Incident Responder (Remediation Agent) for prioritizing SOAR playbook actions and providing expert containment guidance.
-parameters:
-  SESSION_ID:
-    description: "The unique namespace for the current investigation session."
-    type: string
-    required: false
-  USER_ID:
-    description: "The official email address of the analyst."
-    type: string
-    required: false
 ---
 
 # Remediation Agent [PR-CIR-001]

@@ -1,15 +1,6 @@
 ---
 name: sre
 description: SecOps Reliability Engineer (SRE) for investigating SOAR system health and SIEM ingestion errors.
-parameters:
-  SESSION_ID:
-    description: "The unique namespace for the current investigation session."
-    type: string
-    required: false
-  USER_ID:
-    description: "The official email address of the analyst."
-    type: string
-    required: false
 ---
 
 # SRE / SecOps Reliability Engineer [OM-STS-001]

@@ -1,15 +1,6 @@
 ---
 name: scribe
 description: Reporting & Audit Agent (Scribe) for drafting final, NIST-aligned Markdown reports summarizing investigations.
-parameters:
-  SESSION_ID:
-    description: "The unique namespace for the current investigation session."
-    type: string
-    required: false
-  USER_ID:
-    description: "The official email address of the analyst."
-    type: string
-    required: false
 ---
 
 # Reporting & Audit Agent (The Scribe) [OM-ANA-001]

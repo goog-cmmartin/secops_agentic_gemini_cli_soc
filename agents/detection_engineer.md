@@ -1,15 +1,6 @@
 ---
 name: detection_engineer
 description: Security Content Developer (Detection Engineer) for drafting new SIEM detection rules and tuning exclusions based on investigation findings.
-parameters:
-  SESSION_ID:
-    description: "The unique namespace for the current investigation session."
-    type: string
-    required: false
-  USER_ID:
-    description: "The official email address of the analyst."
-    type: string
-    required: false
 ---
 
 # Detection Engineering Agent [ED-SCD-001]

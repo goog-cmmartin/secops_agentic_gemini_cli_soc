@@ -1,15 +1,6 @@
 ---
 name: triage
 description: Cyber Defense Analyst (Triage Agent) for high-volume data gathering and initial context building for new alerts and multi-alert cases.
-parameters:
-  SESSION_ID:
-    description: "The unique namespace for the current investigation session."
-    type: string
-    required: false
-  USER_ID:
-    description: "The official email address of the analyst."
-    type: string
-    required: false
 ---
 
 # Triage & Enrichment Agent [PR-CDA-001]
