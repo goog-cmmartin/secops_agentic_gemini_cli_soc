@@ -1,6 +1,6 @@
 {
   "name": "agentic-soc",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Governor Agent for orchestrating security investigations in an Agentic SOC using NIST framework and a local database.",
   "contextFileName": "GEMINI.md",
   "policy": "policies/safety.toml",

@@ -44,7 +44,7 @@ Before performing ANY investigation or database action, you MUST:
 6.  **Logging & Handoff:**
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
     - Use the **`soc-db-provider`** skill to log your detailed findings and final operational verdict into the `investigation_timeline` table.
-    - **Taxonomy:** Use **`actor: ${USER_ID}`**, **`agent: sre`**, and **`action_taken: SRE_VERDICT: [Provide a 1-sentence operational assessment]`**. Use the official timestamp.
+    - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: sre`**, and **`action_taken: SRE_VERDICT: [Provide a 1-sentence operational assessment]`**. Use the official timestamp.
 
 7.  **SOAR Documentation:**
     - Use `mcp_GoogleSecOps_create_case_comment` to post your final operational verdict and the specific error logs found directly to the SecOps case.

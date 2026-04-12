@@ -42,16 +42,16 @@ Before performing ANY investigation or database action, you MUST:
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
     - **Audit Log:** Use the **`soc-db-provider`** skill to log your activity to the `investigation_timeline` table. Use **`action_taken: DRAFTED_TUNING_SUGGESTION`**.
     - **Post to Case:** Use `mcp_GoogleSecOps_create_case_comment` to post your drafted logic and rationale directly into the original SecOps case.
-    - **Native Export:** Mirror the recommendation to the **`${TUNING_DATA_TABLE}`** in Google SecOps.
+    - **Native Export:** Mirror the recommendation to the **`TUNING_DATA_TABLE`** in Google SecOps.
     - **Schema:** Use `mcp_GoogleSecOps_add_rows_to_data_table` with the following column order:
-        - `session_id`: **`${SESSION_ID}`**.
+        - `session_id`: **`SESSION_ID`**.
         - `incident_id`: The ID of the investigation.
         - `rule_name`: The exact name of the rule.
         - `exclusion_type`: The type of tuning.
         - `exclusion_value`: The criteria to ignore.
         - `rule_logic`: The full YARA-L logic.
         - `rationale`: A summary of your rationale.
-        - `actor`: **`${USER_ID}`**.
+        - `actor`: **`USER_ID`**.
         - `agent`: `detection_engineer`.
     - **Mandatory Real-Time Write:** You MUST include the official timestamp in your export.
 

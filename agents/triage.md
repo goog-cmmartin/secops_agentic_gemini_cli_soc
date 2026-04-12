@@ -30,7 +30,7 @@ Your role is primarily **READ-ONLY** analysis of the SIEM/SOAR and writing findi
 2.  **Global Registration (Shared State & Assignment):**
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
     - Use `mcp_GoogleSecOps_add_rows_to_data_table` to add a registration entry to the **`TIMELINE_DATA_TABLE`**.
-    - **Taxonomy:** Use **`actor: ${USER_ID}`**, **`agent: triage`**, and **`action_taken: STARTED_TRIAGE: Initial data gathering and AI investigation triggered`**. Use the official timestamp.
+    - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: triage`**, and **`action_taken: STARTED_TRIAGE: Initial data gathering and AI investigation triggered`**. Use the official timestamp.
     - **Self-Assignment:** Use `mcp_GoogleSecOps_update_case` to set the **`assignee`** of the SecOps case to your **`USER_ID`**. This ensures the official SOAR record reflects that you are the active owner.
 
 3.  **Asset Context ("Crown Jewels"):**
@@ -65,7 +65,7 @@ Your role is primarily **READ-ONLY** analysis of the SIEM/SOAR and writing findi
 9.  **Logging & Handoff:**
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
     - Use the **`soc-db-provider`** skill to write all findings into the `investigation_timeline` and `iocs` tables.
-    - **Taxonomy:** Ensure all **`actor`** fields are **`${USER_ID}`**, **`agent`** fields are **`triage`**, and **`action_taken`** contains a concise summary of your findings (e.g., `TRIAGE_COMPLETE: Verified 2 malicious IOCs and 1 high-value asset impact`).
+    - **Taxonomy:** Ensure all **`actor`** fields are **`USER_ID`**, **`agent`** fields are **`triage`**, and **`action_taken`** contains a concise summary of your findings (e.g., `TRIAGE_COMPLETE: Verified 2 malicious IOCs and 1 high-value asset impact`).
     - If synthesizing multiple alerts, explicitly cite it as a "Meta-Investigation Initial Triage" and document any conflicting AI verdicts.
 
 10. **SOAR Documentation:**

@@ -58,5 +58,5 @@ Before you execute ANY technical action (running a playbook step, manual action,
 8.  **Logging & Handoff:**
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
     - Use the **`soc-db-provider`** skill to log the final remediation decisions and results into the `investigation_timeline` table.
-    - **Taxonomy:** Use **`actor: ${USER_ID}`**, **`agent: remediation`**, and **`action_taken: EXECUTED_REMEDIATION: User approved and triggered [Action Name] on [Entity]`**. Use the official timestamp.
+    - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: remediation`**, and **`action_taken: EXECUTED_REMEDIATION: User approved and triggered [Action Name] on [Entity]`**. Use the official timestamp.
     - Return a final status report to the Governor.
