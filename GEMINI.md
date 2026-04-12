@@ -16,16 +16,16 @@ At the start of every session, you MUST check if the sentinel **`[SYSTEM_CHECK_C
   1. Verify that the following MCP tool prefixes are available: `mcp_GoogleSecOps`, `mcp_CloudLogging`, `mcp_CloudMonitoring`, and `mcp_DeveloperKnowledge`.
   2. If any tools are missing, inform the user immediately and refer them to the **Manual Tool Configuration** section of the `README.md`.
   3. **MANDATORY STORAGE PROTOCOL:** Run the **`env`** command to read the active configuration. This is your SINGLE SOURCE OF TRUTH. 
-     - Verify the values for **`${STORAGE_PROVIDER}`**, **`${TIMELINE_DATA_TABLE}`**, **`${IOC_DATA_TABLE}`**, and **`${TUNING_DATA_TABLE}`**.
+     - Verify the values for **`STORAGE_PROVIDER`**, **`TIMELINE_DATA_TABLE`**, **`IOC_DATA_TABLE`**, and **`TUNING_DATA_TABLE`**.
      - If `native` (default), announce: "Operating in Native Cloud Mode (Using tables: ${TIMELINE_DATA_TABLE}, ${IOC_DATA_TABLE})."
      - If `sqlite`, announce: "Operating in Portable Local Mode (SQLite: soc_system_of_record.db)."
      - If `dolt`, verify binary and announce: "Operating in Versioned Local Mode (Dolt)."
-     - **CRITICAL:** Use the **`soc-db-provider`** skill for all state interactions. Do not guess table names; use the EXACT values found in the environment.
+     - **CRITICAL:** You are STRICTLY FORBIDDEN from calling `sqlite3` or `dolt` directly. You MUST use the **`soc-db-provider`** skill for ALL state interactions. Do not guess table names; use the EXACT values found in the environment.
   4. **Identify the active user identity**:
      - Check the **`${ANALYST_EMAIL}`** setting. If provided, use this as the **`USER_ID`**.
      - If `${ANALYST_EMAIL}` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.
      - Announce the active `USER_ID` to the user.
-  5. **Session Isolation:** Generate a unique **`${SESSION_ID}`** for the current investigation (e.g., a short UUID or timestamp like `20260410-XYZ`). This ID MUST be used to namespace all database and Data Table entries to prevent cross-talk in shared environments.
+  5. **Session Isolation:** Generate a unique **`SESSION_ID`** for the current investigation (e.g., a short UUID or timestamp like `20260410-XYZ`). This ID MUST be used to namespace all database and Data Table entries to prevent cross-talk in shared environments.
   6. **Emit the Sentinel:** End your check with the literal string **`[SYSTEM_CHECK_COMPLETE]`** to memoize this state.
 
 ## Global Case Verification (Anti-Collision)
@@ -35,7 +35,7 @@ Before delegating a new case to sub-agents, you MUST check if it is already bein
    - Inform the user: "⚠️ **COLLISION WARNING:** Analyst `[USER_ID]` is already investigating Case `[caseId]`. (Started: `[timestamp]`)."
    - Ask the user if they wish to proceed and potentially overwrite/duplicate the effort.
 3. If no active investigation is found, proceed with delegation.
-4. **Performance Tracking:** Initialize the investigation in the `incidents` table using `soc-db-provider`. Get the current timestamp via `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")` and set it as the `start_time`. 
+4. **Performance Tracking:** Initialize the investigation in the `incidents` table using the **`soc-db-provider`** skill. Get the current timestamp via `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")` and set it as the `start_time`. 
    - **MANDATORY:** Ensure the **`incident_id`** is strictly the **numeric Case ID** from SecOps (e.g., `89667`).
    - Set `step_count` to 1.
 
@@ -99,7 +99,7 @@ When a SOAR Case contains multiple alerts, you must orchestrate a **Meta-Investi
 - **Branching (Dolt Only):** If `${STORAGE_PROVIDER}=dolt`, instruct sub-agents to use the `soc-db-provider` skill to create an investigative branch.
 
 ## Delegation & Routing Logic
-When delegating to a sub-agent, you MUST explicitly pass the current **`${STORAGE_PROVIDER}`** value as a requirement for their operation.
+When delegating to a sub-agent, you MUST explicitly pass the current **`${STORAGE_PROVIDER}`**, **`USER_ID`**, and **`SESSION_ID`** values as requirements for their operation.
 
 **STRICT DELEGATION:** You are strictly forbidden from using built-in agents like `generalist` or `codebase_investigator`. You MUST only use the specialized agents provided by this extension (`triage`, `analysis`, `remediation`, `scribe`, `detection_engineer`, `sre`).
 
@@ -132,7 +132,7 @@ When delegating to a sub-agent, you MUST explicitly pass the current **`${STORAG
    - **MANDATORY HITL GATE:** You MUST use **`ask_user`** to confirm with the human analyst before delegating this task. Explain that a suppression rule will be drafted.
    - *Agent Job:* 
      1. Extract the "noise fingerprint" (e.g., the benign IP, safe URL, authorized user, or vulnerability scanner IP).
-     2. Use the `soc-db-provider` skill to log this exclusion into the **`TUNING_DATA_TABLE`**.
+     2. Use the `soc-db-provider` skill to log this exclusion into the **`${TUNING_DATA_TABLE}`**.
      3. Generate the precise YARA-L suppression syntax (e.g., `not re.regex($e.target.url, ...)` or a `reference_list` exclusion).
 
 7. **Phase: Infrastructure/Health check** -> Delegate to **`sre`** sub-agent.
