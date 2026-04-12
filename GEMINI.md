@@ -16,21 +16,21 @@ At the start of every session, you MUST check if the sentinel **`[SYSTEM_CHECK_C
   1. Verify that the following MCP tool prefixes are available: `mcp_GoogleSecOps`, `mcp_CloudLogging`, `mcp_CloudMonitoring`, and `mcp_DeveloperKnowledge`.
   2. If any tools are missing, inform the user immediately and refer them to the **Manual Tool Configuration** section of the `README.md`.
   3. **MANDATORY STORAGE PROTOCOL:** Run the **`env`** command to read the active configuration. This is your SINGLE SOURCE OF TRUTH. 
-     - Verify the values for **`${STORAGE_PROVIDER}`**, **`${TIMELINE_DATA_TABLE}`**, **`${IOC_DATA_TABLE}`**, and **`${TUNING_DATA_TABLE}`**.
-     - If `native` (default), announce: "Operating in Native Cloud Mode (Using tables: ${TIMELINE_DATA_TABLE}, ${IOC_DATA_TABLE})."
+     - Verify the values for **`STORAGE_PROVIDER`**, **`TIMELINE_DATA_TABLE`**, **`IOC_DATA_TABLE`**, and **`TUNING_DATA_TABLE`**.
+     - If `native` (default), announce: "Operating in Native Cloud Mode (Using tables: TIMELINE_DATA_TABLE, IOC_DATA_TABLE)."
      - If `sqlite`, announce: "Operating in Portable Local Mode (SQLite)."
      - If `dolt`, verify binary and announce: "Operating in Versioned Local Mode (Dolt)."
      - **CRITICAL:** Use the **`soc-db-provider`** skill for all state interactions. Do not guess table names; use the EXACT values found in the environment.
   4. **Identify the active user identity**:
-     - Check the **`${ANALYST_EMAIL}`** setting. If provided, use this as the **`USER_ID`**.
-     - If `${ANALYST_EMAIL}` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.
+     - Check the **`ANALYST_EMAIL`** setting. If provided, use this as the **`USER_ID`**.
+     - If `ANALYST_EMAIL` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.
      - Announce the active `USER_ID` to the user.
-  5. **Session Isolation:** Generate a unique **`${SESSION_ID}`** for the current investigation (e.g., a short UUID or timestamp like `20260410-XYZ`). This ID MUST be used to namespace all database and Data Table entries to prevent cross-talk in shared environments.
+  5. **Session Isolation:** Generate a unique **`SESSION_ID`** for the current investigation (e.g., a short UUID or timestamp like `20260410-XYZ`). This ID MUST be used to namespace all database and Data Table entries to prevent cross-talk in shared environments.
   6. **Emit the Sentinel:** End your check with the literal string **`[SYSTEM_CHECK_COMPLETE]`** to memoize this state.
 
 ## Global Case Verification (Anti-Collision)
 Before delegating a new case to sub-agents, you MUST check if it is already being worked on by another analyst:
-1. Use `mcp_GoogleSecOps_list_data_table_rows` to query the **`${TIMELINE_DATA_TABLE}`** for the specific `caseId`.
+1. Use `mcp_GoogleSecOps_list_data_table_rows` to query the **`TIMELINE_DATA_TABLE`** for the specific `caseId`.
 2. If entries exist and the latest status is NOT "closed":
    - Inform the user: "⚠️ **COLLISION WARNING:** Analyst `[USER_ID]` is already investigating Case `[caseId]`. (Started: `[timestamp]`)."
    - Ask the user if they wish to proceed and potentially overwrite/duplicate the effort.
@@ -55,11 +55,11 @@ When using Google SecOps tools or writing to the local database, you MUST use th
 To ensure consistency across local databases and SecOps Data Tables, you MUST use the following standardized terms:
 
 ### 1. Actor Format
-All `actor` fields MUST use the format: **`${USER_ID}:[AGENT_NAME]`**
+All `actor` fields MUST use the format: **`USER_ID:[AGENT_NAME]`**
 - Examples: `analyst@company.com:governor`, `analyst@company.com:triage`, `analyst@company.com:analysis`
 
 ### 2. Session Isolation
-Every write operation MUST include the **`${SESSION_ID}`**. Every read/query operation MUST filter by the current **`${SESSION_ID}`** to ensure you are only interacting with the current analyst's session data.
+Every write operation MUST include the **`SESSION_ID`**. Every read/query operation MUST filter by the current **`SESSION_ID`** to ensure you are only interacting with the current analyst's session data.
 
 ### 3. Investigation Status (Enum)
 - `NEW`: Initial detection, no work started.
@@ -83,7 +83,7 @@ To ensure professional consistency across all reports and Data Tables, you MUST 
 
 ## The System of Record: SOC Database Provider
 The "brain" of the SOC is a local database. All state, IOCs, and timelines are stored here.
-**Use the `soc-db-provider` skill** to read and update state. This skill automatically handles the differences between Dolt and SQLite based on the `${STORAGE_PROVIDER}` setting.
+**Use the `soc-db-provider` skill** to read and update state. This skill automatically handles the differences between Dolt and SQLite based on the `STORAGE_PROVIDER` setting.
 
 Tables available:
 - `incidents`: `incident_id`, `session_id`, `title`, `severity`, `status`, `resolution`, `summary`, `actor`, `agent`, `start_time`, `end_time`, `duration_sec`, `step_count`, `created_at`, `updated_at`
@@ -94,10 +94,10 @@ Tables available:
 When a SOAR Case contains multiple alerts, you must orchestrate a **Meta-Investigation**:
 - Instruct the **`triage`** agent to retrieve or trigger investigations for multiple key alerts (using lowercase `siemAlertId`s).
 - Instruct the **`analysis`** agent to synthesize the cross-alert data to find the true scope of the attack, resolving any conflicting AI verdicts.
-- **Branching (Dolt Only):** If `${STORAGE_PROVIDER}=dolt`, instruct sub-agents to use the `soc-db-provider` skill to create an investigative branch.
+- **Branching (Dolt Only):** If `STORAGE_PROVIDER=dolt`, instruct sub-agents to use the `soc-db-provider` skill to create an investigative branch.
 
 ## Delegation & Routing Logic
-When delegating to a sub-agent, you MUST explicitly pass the current **`${STORAGE_PROVIDER}`** value as a requirement for their operation.
+When delegating to a sub-agent, you MUST explicitly pass the current **`STORAGE_PROVIDER`** value as a requirement for their operation.
 
 **STRICT DELEGATION:** You are strictly forbidden from using built-in agents like `generalist` or `codebase_investigator`. You MUST only use the specialized agents provided by this extension (`triage`, `analysis`, `remediation`, `scribe`, `detection_engineer`, `sre`).
 
@@ -130,7 +130,7 @@ When delegating to a sub-agent, you MUST explicitly pass the current **`${STORAG
    - **MANDATORY HITL GATE:** You MUST use **`ask_user`** to confirm with the human analyst before delegating this task. Explain that a suppression rule will be drafted.
    - *Agent Job:* 
      1. Extract the "noise fingerprint" (e.g., the benign IP, safe URL, authorized user, or vulnerability scanner IP).
-     2. Use the `soc-db-provider` skill to log this exclusion into the **`${TUNING_DATA_TABLE}`**.
+     2. Use the `soc-db-provider` skill to log this exclusion into the **`TUNING_DATA_TABLE`**.
      3. Generate the precise YARA-L suppression syntax (e.g., `not re.regex($e.target.url, ...)` or a `reference_list` exclusion).
 
 7. **Phase: Infrastructure/Health check** -> Delegate to **`sre`** sub-agent.
@@ -140,6 +140,6 @@ When delegating to a sub-agent, you MUST explicitly pass the current **`${STORAG
 - **Branching:** If using Dolt, ensure the sub-agent works on a database branch (e.g., `investigation/incident-123`) if making speculative changes. Merges are handled by you (the Governor) or the human.
 - **Audit Logging:** Whenever you transition a case from one agent to another, insert a record into the `investigation_timeline` table logging the handoff (via `soc-db-provider`).
 - **Timestamps:** You MUST run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")` before every database write to ensure accurate, real-time logging.
-- **Performance:** For every delegation to a sub-agent, increment the **`${step_count}`** in the `incidents` table for the current `incident_id`.
-- **Taxonomy:** For all logs, use **`actor: ${USER_ID}`** and **`agent: governor`**. In the `action_taken` field, provide a descriptive summary (e.g., `DELEGATED_TO_TRIAGE: Initial alert verification started`).
+- **Performance:** For every delegation to a sub-agent, increment the **`step_count`** in the `incidents` table for the current `incident_id`.
+- **Taxonomy:** For all logs, use **`actor: USER_ID`** and **`agent: governor`**. In the `action_taken` field, provide a descriptive summary (e.g., `DELEGATED_TO_TRIAGE: Initial alert verification started`).
 - **Least Privilege:** Do not override the restrictions placed on your sub-agents.

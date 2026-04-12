@@ -5,7 +5,7 @@ description: Abstracts database access for the Agentic SOC, supporting Native Se
 
 # SOC Database Provider Skill
 
-This skill provides a unified interface for sub-agents to read and write investigation state. It dynamically handles the syntax differences based on the **`${STORAGE_PROVIDER}`** and **`${SESSION_ID}`** environment variables, which are your **SINGLE SOURCE OF TRUTH**. 
+This skill provides a unified interface for sub-agents to read and write investigation state. It dynamically handles the syntax differences based on the **`STORAGE_PROVIDER`** and **`SESSION_ID`** environment variables, which are your **SINGLE SOURCE OF TRUTH**. 
 
 ## Configuration Context
 - `STORAGE_PROVIDER`: (Values: `native`, `sqlite`, `dolt`) MUST be used to determine the backend.
@@ -23,20 +23,20 @@ To ensure an accurate and professional timeline, you MUST NOT guess the current 
 Use the output of this command as the value for all `timestamp` fields.
 
 ### 2. Unified State Interaction
-Read the value of the **`${STORAGE_PROVIDER}`** and **`${SESSION_ID}`** environment variables before every interaction. 
+Read the value of the **`STORAGE_PROVIDER`** and **`SESSION_ID`** environment variables before every interaction. 
 
-**If `${STORAGE_PROVIDER}=native` (Default / Cloud-Native Mode):**
+**If `STORAGE_PROVIDER=native` (Default / Cloud-Native Mode):**
 Do NOT use local shell commands for storage. You MUST document your activity by calling the Google SecOps MCP tools directly for EVERY write.
 - **STRICT COLUMN ORDERING:** You MUST follow the exact column order defined below in your JSON payload. 
 
-- **To Log Activity:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`${TIMELINE_DATA_TABLE}`**.
+- **To Log Activity:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`TIMELINE_DATA_TABLE`**.
   **Mandatory JSON Template:**
   ```json
   {
-    "session_id": "${SESSION_ID}",
+    "session_id": "SESSION_ID",
     "incident_id": "INC-XXXXX",
     "timestamp": "[RESULT_OF_DATE_COMMAND]",
-    "actor": "${USER_ID}",
+    "actor": "USER_ID",
     "agent": "your_agent_name",
     "action_taken": "Your concise summary",
     "duration_sec": "0",
@@ -44,54 +44,54 @@ Do NOT use local shell commands for storage. You MUST document your activity by 
   }
   ```
 
-- **To Register IOCs:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`${IOC_DATA_TABLE}`**.
+- **To Register IOCs:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`IOC_DATA_TABLE`**.
   **Mandatory JSON Template:**
   ```json
   {
-    "session_id": "${SESSION_ID}",
+    "session_id": "SESSION_ID",
     "incident_id": "INC-XXXXX",
     "indicator_type": "IP",
     "indicator_value": "1.2.3.4",
     "is_malicious": "TRUE",
-    "actor": "${USER_ID}",
+    "actor": "USER_ID",
     "agent": "your_agent_name"
   }
   ```
 
-- **To Propose Tuning:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`${TUNING_DATA_TABLE}`**.
+- **To Propose Tuning:** Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting **`TUNING_DATA_TABLE`**.
   **Mandatory JSON Template:**
   ```json
   {
-    "session_id": "${SESSION_ID}",
+    "session_id": "SESSION_ID",
     "incident_id": "INC-XXXXX",
     "rule_name": "RuleName",
     "exclusion_type": "ExclusionType",
     "exclusion_value": "ExclusionValue",
     "rule_logic": "YARA-L Snippet",
     "rationale": "Your rationale",
-    "actor": "${USER_ID}",
+    "actor": "USER_ID",
     "agent": "your_agent_name"
   }
   ```
 
-- **To Read Context:** Use `mcp_GoogleSecOps_list_data_table_rows` with a filter for the **`incident_id` AND `${SESSION_ID}`**.
+- **To Read Context:** Use `mcp_GoogleSecOps_list_data_table_rows` with a filter for the **`incident_id` AND `SESSION_ID`**.
 
-**If `${STORAGE_PROVIDER}=sqlite` (Portable Local Mode):**
+**If `STORAGE_PROVIDER=sqlite` (Portable Local Mode):**
 Use the `sqlite3` CLI. **CRITICAL:** Use the project's temporary directory for the database file.
 - **CONCURRENCY LIMITATION:** SQLite is a single-user format. 
 - **ERROR HANDLING:** If you receive a "database is locked" error, wait 2 seconds and retry.
 `run_shell_command("sqlite3 \$GEMINI_TMP_DIR/investigation.db \"YOUR_SQL_QUERY\"")`
 
-**If `${STORAGE_PROVIDER}=dolt` (Versioned Local Mode):**
+**If `STORAGE_PROVIDER=dolt` (Versioned Local Mode):**
 Use the `dolt` CLI:
 `run_shell_command("dolt sql -q \"YOUR_SQL_QUERY\"")`
 
 ### 3. Standardized Data Taxonomy (Strict Auditing)
 Regardless of the provider, you MUST adhere to the following schema and columns:
 
-- **`actor`**: The User OAuth identity (email), provided as **`${USER_ID}`**.
+- **`actor`**: The User OAuth identity (email), provided as **`USER_ID`**.
 - **`agent`**: Your sub-agent name (e.g., `triage`, `analysis`, `remediation`, `scribe`, `sre`, `detection_engineer`).
-- **`session_id`**: The unique namespace for the current investigation, provided as **`${SESSION_ID}`**.
+- **`session_id`**: The unique namespace for the current investigation, provided as **`SESSION_ID`**.
 - **`action_taken`**: Do NOT use generic terms. You MUST provide a **concise summary of your findings or actions**.
 - **Status Enum:** Only use `NEW`, `TRIAGE`, `ANALYSIS`, `REMEDIATION`, `REPORTING`, `CLOSED`.
 - **Indicator Types:** Only use `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
@@ -99,8 +99,8 @@ Regardless of the provider, you MUST adhere to the following schema and columns:
 - **Time Format:** You MUST use the result of the **`date`** command mentioned in Section 1.
 
 ### 4. Auditing & Multi-Tenancy
-- **Identification:** Include the **`${USER_ID}`** in the **`actor`** column for every write.
-- **Namespacing:** Include the **`${SESSION_ID}`** in the **`session_id`** column for every write. Every query MUST filter by `session_id`.
+- **Identification:** Include the **`USER_ID`** in the **`actor`** column for every write.
+- **Namespacing:** Include the **`SESSION_ID`** in the **`session_id`** column for every write. Every query MUST filter by `session_id`.
 
 ### 5. Special Handling: Branching (Dolt Only)
 If using **Dolt**, you should use branching for speculative work:
