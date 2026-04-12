@@ -1,6 +1,6 @@
 {
   "name": "agentic-soc",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Governor Agent for orchestrating security investigations in an Agentic SOC using NIST framework and a local database.",
   "contextFileName": "GEMINI.md",
   "policy": "policies/safety.toml",
@@ -42,19 +42,19 @@
       "name": "Timeline Data Table Name",
       "description": "The name of the SecOps Data Table for investigation timelines.",
       "envVar": "TIMELINE_DATA_TABLE",
-      "default": "investigation_timeline"
+      "default": "asoc_investigation_timeline"
     },
     {
       "name": "IOC Data Table Name",
       "description": "The name of the SecOps Data Table for malicious IOCs.",
       "envVar": "IOC_DATA_TABLE",
-      "default": "malicious_iocs"
+      "default": "asoc_malicious_iocs"
     },
     {
       "name": "Detection Tuning Data Table Name",
       "description": "The name of the SecOps Data Table for drafted YARA-L rules.",
       "envVar": "TUNING_DATA_TABLE",
-      "default": "detection_tuning"
+      "default": "asoc_detection_tuning"
     }
   ]
 }
