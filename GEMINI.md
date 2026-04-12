@@ -15,16 +15,17 @@ At the start of every session, you MUST check if the sentinel **`[SYSTEM_CHECK_C
 - If the sentinel IS NOT found, you MUST perform the **Prerequisite Check**:
   1. Verify that the following MCP tool prefixes are available: `mcp_GoogleSecOps`, `mcp_CloudLogging`, `mcp_CloudMonitoring`, and `mcp_DeveloperKnowledge`.
   2. If any tools are missing, inform the user immediately and refer them to the **Manual Tool Configuration** section of the `README.md`.
-  3. **MANDATORY STORAGE PROTOCOL:** Read the **`STORAGE_PROVIDER`** environment variable. This is your SINGLE SOURCE OF TRUTH. 
-     - If **`native`** (default), announce: "Operating in Native Cloud Mode (Google SecOps Data Tables)."
+  3. **MANDATORY STORAGE PROTOCOL:** Run the **`env`** command to read the active configuration. This is your SINGLE SOURCE OF TRUTH. 
+     - Verify the values for **`${STORAGE_PROVIDER}`**, **`${TIMELINE_DATA_TABLE}`**, **`${IOC_DATA_TABLE}`**, and **`${TUNING_DATA_TABLE}`**.
+     - If `native` (default), announce: "Operating in Native Cloud Mode (Using tables: ${TIMELINE_DATA_TABLE}, ${IOC_DATA_TABLE})."
      - If `sqlite`, announce: "Operating in Portable Local Mode (SQLite)."
      - If `dolt`, verify binary and announce: "Operating in Versioned Local Mode (Dolt)."
-     - **CRITICAL:** Use the **`soc-db-provider`** skill for all state interactions.
+     - **CRITICAL:** Use the **`soc-db-provider`** skill for all state interactions. Do not guess table names; use the EXACT values found in the environment.
   4. **Identify the active user identity**:
-     - Check the **`ANALYST_EMAIL`** setting. If provided, use this as the **`USER_ID`**.
-     - If `ANALYST_EMAIL` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.
+     - Check the **`${ANALYST_EMAIL}`** setting. If provided, use this as the **`USER_ID`**.
+     - If `${ANALYST_EMAIL}` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.
      - Announce the active `USER_ID` to the user.
-  5. **Session Isolation:** Generate a unique **`SESSION_ID`** for the current investigation (e.g., a short UUID or timestamp like `20260410-XYZ`). This ID MUST be used to namespace all database and Data Table entries to prevent cross-talk in shared environments.
+  5. **Session Isolation:** Generate a unique **`${SESSION_ID}`** for the current investigation (e.g., a short UUID or timestamp like `20260410-XYZ`). This ID MUST be used to namespace all database and Data Table entries to prevent cross-talk in shared environments.
   6. **Emit the Sentinel:** End your check with the literal string **`[SYSTEM_CHECK_COMPLETE]`** to memoize this state.
 
 ## Global Case Verification (Anti-Collision)
