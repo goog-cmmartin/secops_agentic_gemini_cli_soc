@@ -54,4 +54,5 @@ Your role is **READ-ONLY** analysis of the SIEM/SOAR and writing findings to the
 
 8.  **SOAR Documentation:**
     - Use `mcp_GoogleSecOps_create_case_comment` to post your final analysis summary and Meta-Verdict directly to the SecOps case.
-    - Return the final verdict (Malicious/Benign) and specific, actionable containment recommendations to the Governor.
+    - **Resolution Requirement:** You MUST return a final Meta-Verdict using one of the nuanced categories: `TRUE_POSITIVE_MALICIOUS`, `TRUE_POSITIVE_BENIGN`, `FALSE_POSITIVE_NOISE`, or `FALSE_POSITIVE_EXPECTED`.
+    - Provide specific, actionable containment recommendations to the Governor based on this verdict.

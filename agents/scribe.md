@@ -60,12 +60,13 @@ Before performing ANY investigation or database action, you MUST:
     - **STRICT REQUIREMENT:** Your comment MUST include a summary of the performance metrics (e.g., "Investigation completed in 45 seconds with 6 agent interactions").
     - **CLOSURE POLICY (The "Last Alert" Rule):** 
         - In Google SecOps, you cannot close all alerts while keeping the case open.
-        - If the final verdict is clearly a **FALSE_POSITIVE**, use `execute_bulk_close_case` to formally resolve the SecOps case with the reason `NOT_MALICIOUS`. This closes all alerts and the case simultaneously.
-        - If the verdict is **TRUE_POSITIVE** or **MALICIOUS**, do **NOT** close the case or the final alert. Leave them in their current stage for final human validation and sign-off.
+        - **Nuanced Closure:** If the resolution is `FALSE_POSITIVE_NOISE`, `FALSE_POSITIVE_EXPECTED`, or `TRUE_POSITIVE_BENIGN`, use `execute_bulk_close_case` to formally resolve the SecOps case.
+        - Use the reason `NOT_MALICIOUS` for FPs and `MAINTENANCE` or `INCONCLUSIVE` for TP_BENIGN.
+        - If the resolution is **`TRUE_POSITIVE_MALICIOUS`**, do **NOT** close the case or the final alert. Leave them in their current stage for final human validation and sign-off.
 
 9.  **Database Closure & Benchmarking:**
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
-    - Use the **`soc-db-provider`** skill to update the incident status to **`CLOSED`** in the `incidents` table.
+    - Use the **`soc-db-provider`** skill to update the incident status to **`CLOSED`** and set the final **`resolution`** using the nuanced taxonomy.
     - **Final Audit:** Set the `end_time` to current timestamp and save the final `duration_sec` calculation.
     - **Efficiency Benchmarking:** You MUST return a formatted **Performance Summary** to the Governor, including:
         - **Total Runtime:** [X] seconds

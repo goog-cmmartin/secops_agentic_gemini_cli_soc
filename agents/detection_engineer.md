@@ -21,15 +21,15 @@ Before performing ANY investigation or database action, you MUST:
 
 1.  **Investigation Analysis:**
     - Use the **`soc-db-provider`** skill to query the `investigation_timeline` and `iocs` for the completed investigation. **Filter by `SESSION_ID`.**
-    - Identify the outcome (True Positive/Malicious vs. False Positive/Benign).
+    - Identify the nuanced outcome: `TRUE_POSITIVE_MALICIOUS`, `TRUE_POSITIVE_BENIGN`, `FALSE_POSITIVE_NOISE`, or `FALSE_POSITIVE_EXPECTED`.
 
-2.  **Scenario A: Confirmed Threat (True Positive)**
+2.  **Scenario A: Confirmed Malicious (TRUE_POSITIVE_MALICIOUS)**
     - **Attack Path Analysis:** Identify the sequence of events (e.g., Initial Access -> Lateral Movement).
     - **YARA-L Rule Drafting:** Focus on **Multi-Stage Logic**. Draft a rule that joins different event types (e.g., a `USER_LOGIN` followed by a `PROCESS_LAUNCH`).
     - **Logic:** Include `meta`, `events`, and `condition` sections.
 
-3.  **Scenario B: Noise Suppression (False Positive)**
-    - **Noise Fingerprint Extraction:** Identify the specific criteria that made the alert benign (e.g., a specific authorized user, a vulnerability scanner IP, or a safe URL path regex).
+3.  **Scenario B: Noise Suppression (FALSE_POSITIVE or TRUE_POSITIVE_BENIGN)**
+    - **Noise Fingerprint Extraction:** Identify the specific criteria that made the alert benign or expected (e.g., a specific authorized user, a vulnerability scanner IP, or a safe URL path regex).
     - **Exclusion Logic Formulation:** Generate the precise YARA-L syntax required to suppress this noise (e.g., `not re.regex($e.target.url, "...")`).
     - **HITL Breakpoint:** Use the **`ask_user`** tool to present the proposed suppression snippet and the rationale to the human.
     - **Choices:** `[{"label": "APPROVE", "description": "Log this exclusion to the Tuning table"}, {"label": "DENY", "description": "Cancel the tuning request"}]`.

@@ -107,6 +107,7 @@ Regardless of the provider, you MUST adhere to the following schema and columns:
 - **`session_id`**: The unique namespace for the current investigation, provided as **`SESSION_ID`**.
 - **`action_taken`**: Do NOT use generic terms. You MUST provide a **concise summary of your findings or actions**.
 - **Status Enum:** Only use `NEW`, `TRIAGE`, `ANALYSIS`, `REMEDIATION`, `REPORTING`, `CLOSED`.
+- **Resolution Enum (MTTX):** Only use `TRUE_POSITIVE_MALICIOUS`, `TRUE_POSITIVE_BENIGN`, `FALSE_POSITIVE_NOISE`, `FALSE_POSITIVE_EXPECTED`.
 - **Indicator Types:** Only use `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
 - **Exclusion Types:** Only use `URL_PATH_REGEX`, `SAFE_IP_CIDR`, `AUTHORIZED_USER`, `TRUSTED_DOMAIN`.
 - **Time Format:** You MUST use ISO 8601 UTC format (**`YYYY-MM-DDTHH:MM:SSZ`**) for every timestamp.

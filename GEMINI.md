@@ -16,14 +16,13 @@ At the start of every session, you MUST check if the sentinel **`[SYSTEM_CHECK_C
   1. Verify that the following MCP tool prefixes are available: `mcp_GoogleSecOps`, `mcp_CloudLogging`, `mcp_CloudMonitoring`, and `mcp_DeveloperKnowledge`.
   2. If any tools are missing, inform the user immediately and refer them to the **Manual Tool Configuration** section of the `README.md`.
   3. **MANDATORY STORAGE PROTOCOL:** Your configuration (`STORAGE_PROVIDER`, `TIMELINE_DATA_TABLE`, `IOC_DATA_TABLE`, etc.) is **automatically injected** into your environment by the Gemini CLI extension system. 
-     - **DO NOT** attempt to run `env` or search for `.env` files to verify these. 
-     - **DO NOT** guess table names; use the variables directly.
-     - If `native` (default), announce: "Operating in Native Cloud Mode."
-     - If `sqlite`, announce: "Operating in Portable Local Mode (SQLite: soc_system_of_record.db)."
-     - If `dolt`, verify binary and announce: "Operating in Versioned Local Mode (Dolt)."
-     - **CRITICAL:** Use the **`soc-db-provider`** skill for ALL state interactions. 
+     - **DEPRECATION NOTICE:** You are STRICTLY FORBIDDEN from using the old table names `investigation_timeline` or `malicious_iocs`. You MUST use the values currently set in your environment variables.
+     - Verify the values for **`STORAGE_PROVIDER`**, **`TIMELINE_DATA_TABLE`**, **`IOC_DATA_TABLE`**, and **`TUNING_DATA_TABLE`**.
+     - Announce the mode and the EXACT table names found in the environment (e.g., "Operating in Native Cloud Mode using table: [Value of TIMELINE_DATA_TABLE]").
+     - **CRITICAL:** You are STRICTLY FORBIDDEN from calling `sqlite3` or `dolt` directly. You MUST use the **`soc-db-provider`** skill for ALL state interactions. Do not guess table names; use the EXACT values found in the environment.
   4. **Identify the active user identity**:
-     - The **`${ANALYST_EMAIL}`** and **`${USER_ID}`** are provided in your environment. If `ANALYST_EMAIL` is missing, you may run `run_shell_command("gcloud config get-value account")` once to resolve your identity.
+     - Check the **`${ANALYST_EMAIL}`** setting. If provided, use this as the **`USER_ID`**.
+     - If `${ANALYST_EMAIL}` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.
      - Announce the active `USER_ID` to the user.
   5. **Session Isolation:** Generate a unique **`${SESSION_ID}`** for the current investigation. This ID MUST be used to namespace all database and Data Table entries.
   6. **Emit the Sentinel:** End your check with the literal string **`[SYSTEM_CHECK_COMPLETE]`** to memoize this state.
@@ -71,14 +70,21 @@ Every write operation MUST include the **`${SESSION_ID}`**. Every read/query ope
 - `REPORTING`: Drafting final reports and auditing.
 - `CLOSED`: Investigation finalized and reported.
 
-### 4. Indicator Types (Enum)
+### 4. Resolution Taxonomy (Nuanced MTTX)
+To enable high-fidelity reporting and metrics, you MUST use one of the following specific resolutions:
+- **`TRUE_POSITIVE_MALICIOUS`**: Confirmed threat; actual malicious activity detected and required remediation.
+- **`TRUE_POSITIVE_BENIGN`**: Alert was accurate, but the activity was authorized, harmless, or a known-safe edge case.
+- **`FALSE_POSITIVE_NOISE`**: Alert was inaccurate; the detection logic fired on activity that did not match the intended threat.
+- **`FALSE_POSITIVE_EXPECTED`**: Alert was technically accurate but triggered by expected system behavior or authorized administrative actions.
+
+### 5. Indicator Types (Enum)
 - `IP`, `DOMAIN`, `URL`, `HASH_SHA256`, `HASH_MD5`, `USER`, `HOSTNAME`, `FILE_PATH`.
 
-### 5. Action Taken (Verb-First)
+### 6. Action Taken (Verb-First)
 Use concise, uppercase, verb-first phrases:
 - `STARTED_INVESTIGATION`, `IDENTIFIED_IOCS`, `EXECUTED_CONTAINMENT`, `DRAFTED_DETECTION_RULE`.
 
-### 6. Time Format (ISO 8601 UTC)
+### 7. Time Format (ISO 8601 UTC)
 To ensure professional consistency across all reports and Data Tables, you MUST use the following format for ALL timestamps:
 - **`YYYY-MM-DDTHH:MM:SSZ`** (e.g., `2026-04-10T14:30:00Z`).
 - Do NOT use epoch/unix timestamps in user-facing fields.
@@ -129,8 +135,8 @@ When delegating to a sub-agent, you MUST provide a clear `query` describing the 
    - *Condition:* Investigation complete, attack path identified (True Positive).
    - *Agent Job:* Drafts multi-stage YARA-L rules and validates syntax.
 
-6. **Phase: Closed-Loop Tuning (False Positives)** -> Delegate to **`detection_engineer`** sub-agent.
-   - *Condition:* Alert/Case verified as a **FALSE_POSITIVE** or **BENIGN**.
+6. **Phase: Closed-Loop Tuning (False Positives / Benign)** -> Delegate to **`detection_engineer`** sub-agent.
+   - *Condition:* Alert/Case verified as any **FALSE_POSITIVE** or **TRUE_POSITIVE_BENIGN**.
    - **MANDATORY HITL GATE:** You MUST use **`ask_user`** to confirm with the human analyst before delegating this task. Explain that a suppression rule will be drafted.
    - *Agent Job:* 
      1. Extract the "noise fingerprint" (e.g., the benign IP, safe URL, authorized user, or vulnerability scanner IP).
