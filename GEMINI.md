@@ -24,7 +24,10 @@ At the start of every session, you MUST check if the sentinel **`[SYSTEM_CHECK_C
      - Check the **`${ANALYST_EMAIL}`** setting. If provided, use this as the **`USER_ID`**.
      - If `${ANALYST_EMAIL}` is empty, run `run_shell_command("gcloud config get-value account")` and use the resulting email as the **`USER_ID`**.
      - Announce the active `USER_ID` to the user.
-  5. **Session Isolation:** Generate a unique **`${SESSION_ID}`** for the current investigation. This ID MUST be used to namespace all database and Data Table entries.
+  5. **Session Isolation (MANDATORY FORMAT):** Generate a unique **`${SESSION_ID}`** for the current investigation. 
+     - **REQUIRED FORMAT:** `SESS-[YYYYMMDD]-[INCIDENT_ID]` (e.g., `SESS-20260414-90058`).
+     - This ID MUST remain constant for the entire session. 
+     - This ID MUST be used to namespace all database and Data Table entries.
   6. **Emit the Sentinel:** End your check with the literal string **`[SYSTEM_CHECK_COMPLETE]`** to memoize this state.
 
 ## Global Case Verification (Anti-Collision)
