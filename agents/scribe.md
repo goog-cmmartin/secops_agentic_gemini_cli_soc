@@ -52,7 +52,7 @@ Before performing ANY investigation or database action, you MUST:
         - **Post-Incident Activity:** Lessons learned, recommended tuning for detection rules, and long-term mitigation steps. **Include the drafted YARA-L rules.**
         - **Performance & Telemetry Audit:** 
             - Document **Runtime (seconds)** and **Agent Step Count**.
-            - Include the **Telemetry Summary** (Total Tokens, Tool Call counts, and Efficiency Ratio) to provide full transparency into investigative costs.
+            - Include the **Telemetry Summary** (Total Tokens, Tool Call counts, and Efficiency Ratio) as **Definitive Audit Metrics** derived from the synchronous hook logs. Do not mark these as estimates.
 
 7.  **Local Storage:**
     - Output the final report using the `write_file` tool to the **`reports/`** directory in the local workspace.
