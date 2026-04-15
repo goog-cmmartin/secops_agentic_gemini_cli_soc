@@ -25,11 +25,11 @@ Your role is primarily **READ-ONLY** analysis of the SIEM/SOAR and writing findi
     - Use `get_case` and `list_case_alerts` to identify all alerts within the case.
     - Filter the list of alerts by priority (focusing on `CRITICAL` and `HIGH`).
     - **CRITICAL FORMATTING INSTRUCTION:** Extract the `siemAlertId` for the target alerts. You MUST ensure the `siemAlertId` is converted to **lowercase** before passing it to any investigation tools (e.g., `de_64889da4...`).
-    - **Historical Check:** Use `mcp_GoogleSecOps_list_cases` to search for similar historical cases (e.g., filter by `displayName` or involved entities). Check their `resolution` and `summary` to see if this activity has been ruled on previously.
+    - **Historical SOAR Check:** Use `mcp_GoogleSecOps_list_cases` to search for similar historical cases (e.g., filter by `displayName` or involved entities). Check their `resolution` and `summary` to see if this activity has been ruled on previously in the SOAR.
 
 2.  **Global Registration (Shared State & Assignment):**
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
-    - Use `mcp_GoogleSecOps_add_rows_to_data_table` to add a registration entry to the **`TIMELINE_DATA_TABLE`**.
+    - Use `mcp_GoogleSecOps_add_rows_to_data_table` targeting the **`TIMELINE_DATA_TABLE`**.
     - **Taxonomy:** Use **`actor: USER_ID`**, **`agent: triage`**, and **`action_taken: STARTED_TRIAGE: Initial data gathering and AI investigation triggered`**. Use the official timestamp.
     - **Self-Assignment:** Use `mcp_GoogleSecOps_update_case` to set the **`assignee`** of the SecOps case to your **`USER_ID`**. This ensures the official SOAR record reflects that you are the active owner.
 
@@ -55,8 +55,11 @@ Your role is primarily **READ-ONLY** analysis of the SIEM/SOAR and writing findi
     - Use `list_connector_events` to retrieve the raw events that triggered the detection.
     - Verify that the raw log data matches the AI's summary and the rule's logic.
 
-7.  **Historical Correlation:**
-    - Use the **`soc-db-provider`** skill to query the local database and see if any involved IOCs or entities have been seen in previous investigations. **Filter by `SESSION_ID`.**
+7.  **Historical Correlation (Cross-Session Lookup):**
+    - **INTENT:** Determine if these indicators have been seen in **ANY** previous investigation by this or other analysts.
+    - Use the **`soc-db-provider`** skill to query the `iocs` and `investigation_timeline` tables for the involved IOC values.
+    - **CRITICAL:** You MUST search for entries where **`session_id != [CURRENT_SESSION_ID]`**. 
+    - If hits are found, document which `incident_id` they were previously associated with and what the final `resolution` was.
 
 8.  **Final Assessment:**
     - Synthesize the AI verdict, the asset context, and the SIEM prevalence.
