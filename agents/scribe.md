@@ -22,7 +22,7 @@ Before performing ANY investigation or database action, you MUST:
     - Use `get_case` to retrieve official SecOps case metadata, tags, and involved products.
     - Use `list_case_comments` to fetch all official analyst notes and the case's historical investigation trail.
 
-2.  **Agentic Telemetry Ingestion (NEW):**
+2.  **Agentic Telemetry Ingestion:**
     - Check for the existence of the file **`.gemini/telemetry/events.jsonl`** in the project directory.
     - If found, read and parse the file. Filter events by the current **`SESSION_ID`**.
     - **Summarize Telemetry:**
@@ -30,6 +30,7 @@ Before performing ANY investigation or database action, you MUST:
         - **Total Output Tokens:** Sum of `output_tokens` from `AfterModel` events.
         - **Tool Call Audit:** Count occurrences of each unique `tool` name in `AfterTool` events.
         - **Efficiency Ratio:** Calculate `(Total Tokens) / (Final Step Count)`.
+        - **Per-Agent Breakdown (NEW):** Use the `attributed_agent` field in the logs to calculate the total token cost and tool calls for **each** sub-agent role (triage, analysis, remediation, etc.).
 
 3.  **Automation & Audit Review:**
     - Use `list_playbook_instances` to gather a history of all automated playbooks executed on the case.
@@ -52,7 +53,8 @@ Before performing ANY investigation or database action, you MUST:
         - **Post-Incident Activity:** Lessons learned, recommended tuning for detection rules, and long-term mitigation steps. **Include the drafted YARA-L rules.**
         - **Performance & Telemetry Audit:** 
             - Document **Runtime (seconds)** and **Agent Step Count**.
-            - Include the **Telemetry Summary** (Total Tokens, Tool Call counts, and Efficiency Ratio) as **Definitive Audit Metrics** derived from the synchronous hook logs. Do not mark these as estimates.
+            - **Telemetry Summary:** Include total tokens and total tool calls as **Definitive Audit Metrics**.
+            - **Per-Agent Cost Analysis:** Provide a breakdown of which SOC roles consumed the most resources (e.g., "Analysis: 2.1M tokens, 12 tool calls").
 
 7.  **Local Storage:**
     - Output the final report using the `write_file` tool to the **`reports/`** directory in the local workspace.
