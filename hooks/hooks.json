@@ -1,28 +1,30 @@
 {
-  "AfterTool": [
-    {
-      "matcher": "mcp_.*",
-      "hooks": [
-        {
-          "name": "mcp-telemetry",
-          "type": "command",
-          "command": "python3 ${extensionPath}/scripts/hooks/telemetry.py",
-          "description": "Logs metadata for every MCP tool execution."
-        }
-      ]
-    }
-  ],
-  "AfterModel": [
-    {
-      "matcher": "*",
-      "hooks": [
-        {
-          "name": "token-telemetry",
-          "type": "command",
-          "command": "python3 ${extensionPath}/scripts/hooks/telemetry.py",
-          "description": "Logs token usage metadata for every model response."
-        }
-      ]
-    }
-  ]
+  "hooks": {
+    "AfterTool": [
+      {
+        "matcher": "mcp_.*",
+        "hooks": [
+          {
+            "name": "mcp-telemetry",
+            "type": "command",
+            "command": "python3 ${extensionPath}/scripts/hooks/telemetry.py",
+            "description": "Logs metadata for every MCP tool execution."
+          }
+        ]
+      }
+    ],
+    "AfterModel": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "token-telemetry",
+            "type": "command",
+            "command": "python3 ${extensionPath}/scripts/hooks/telemetry.py",
+            "description": "Logs token usage metadata for every model response."
+          }
+        ]
+      }
+    ]
+  }
 }

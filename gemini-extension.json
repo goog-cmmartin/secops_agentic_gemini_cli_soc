@@ -1,6 +1,6 @@
 {
   "name": "agentic-soc",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "description": "Governor Agent for orchestrating security investigations in an Agentic SOC using NIST framework and a local database.",
   "contextFileName": "GEMINI.md",
   "policy": "policies/safety.toml",
@@ -15,7 +15,7 @@
       "name": "Dolt Binary Path",
       "description": "The path to the Dolt binary (Optional: Only required if Storage Provider is set to 'dolt').",
       "envVar": "DOLT_BINARY_PATH",
-      "default": "dolt"
+      "default": ""
     },
     {
       "name": "Google Cloud Project ID",
