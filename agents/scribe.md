@@ -30,7 +30,7 @@ Before performing ANY investigation or database action, you MUST:
         - **Total Output Tokens:** Sum of `output_tokens` from `AfterModel` events.
         - **Tool Call Audit:** Count occurrences of each unique `tool` name in `AfterTool` events.
         - **Efficiency Ratio:** Calculate `(Total Tokens) / (Final Step Count)`.
-        - **Per-Agent Breakdown (NEW):** Use the `attributed_agent` field in the logs to calculate the total token cost and tool calls for **each** sub-agent role (triage, analysis, remediation, etc.).
+        - **Per-Agent Breakdown:** Use the `attributed_agent` field in the logs to calculate the total token cost and tool calls for **each** sub-agent role.
 
 3.  **Automation & Audit Review:**
     - Use `list_playbook_instances` to gather a history of all automated playbooks executed on the case.
@@ -54,33 +54,39 @@ Before performing ANY investigation or database action, you MUST:
         - **Performance & Telemetry Audit:** 
             - Document **Runtime (seconds)** and **Agent Step Count**.
             - **Telemetry Summary:** Include total tokens and total tool calls as **Definitive Audit Metrics**.
-            - **Per-Agent Cost Analysis:** Provide a breakdown of which SOC roles consumed the most resources (e.g., "Analysis: 2.1M tokens, 12 tool calls").
+            - **Per-Agent Cost Analysis:** Provide a breakdown of which SOC roles consumed the most resources.
 
 7.  **Local Storage:**
     - Output the final report using the `write_file` tool to the **`reports/`** directory in the local workspace.
-    - **STRICT NAMING CONVENTION:** The filename MUST follow the format **`INC-[ID]_Report.md`** (e.g., `INC-89305_Report.md`). Do not use "Case_" or other variations.
+    - **STRICT NAMING CONVENTION:** The filename MUST follow the format **`INC-[ID]_Report.md`**.
 
 8.  **Native Export (Google SecOps Data Tables):**
-    - To ensure the investigation state is visible to the entire SOC and available for detection rules, mirror the findings to SecOps Data Tables.
-    - Check for the existence of (or create) tables using the names specified in the settings: **`TIMELINE_DATA_TABLE`**, **`IOC_DATA_TABLE`**, and **`TUNING_DATA_TABLE`**.
-    - If a table does not exist, use `create_data_table` with the schema defined in the `soc-db-provider` skill.
+    - Mirror findings to SecOps Data Tables: **`TIMELINE_DATA_TABLE`**, **`IOC_DATA_TABLE`**, and **`TUNING_DATA_TABLE`**.
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
     - Use `add_rows_to_data_table` to export the final findings. Include the **`SESSION_ID`** and the official timestamp in every row.
-    - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status **`CLOSED`** for this `incident_id`. Include the **`SESSION_ID`**, total **`duration_sec`**, and **`step_count`**.
+    - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status **`CLOSED`** for this `incident_id`.
 
-9.  **SOAR Documentation:**
-    - Use `mcp_GoogleSecOps_create_case_comment` in SecOps to log that the formal NIST-aligned report has been generated.
-    - **STRICT REQUIREMENT:** Your comment MUST include a summary of the performance and telemetry (e.g., "Investigation completed in 45 seconds using 12,400 total tokens").
+9.  **Telemetry Archiving & Hygiene (NEW):**
+    - Use `run_shell_command` to archive the telemetry for the current investigation:
+        1.  Create an archive directory: `mkdir -p .gemini/telemetry/archive`
+        2.  Extract current session lines into a per-session file: `grep 'SESSION_ID' .gemini/telemetry/events.jsonl > .gemini/telemetry/archive/SESSION_ID.jsonl`
+        3.  Remove session lines from the main log: `grep -v 'SESSION_ID' .gemini/telemetry/events.jsonl > .gemini/telemetry/events.jsonl.tmp && mv .gemini/telemetry/events.jsonl.tmp .gemini/telemetry/events.jsonl`
+    - This ensures the main `events.jsonl` remains small and performant.
+
+10. **SOAR Documentation:**
+    - Use `mcp_GoogleSecOps_create_case_comment` in SecOps to log that the formal report has been generated.
     - **CLOSURE POLICY (The "Last Alert" Rule):** 
         - If the resolution is `FALSE_POSITIVE_NOISE`, `FALSE_POSITIVE_EXPECTED`, or `TRUE_POSITIVE_BENIGN`, use `execute_bulk_close_case` to formally resolve the SecOps case.
         - If the resolution is **`TRUE_POSITIVE_MALICIOUS`**, do **NOT** close the case.
 
-10. **Database Closure & Benchmarking:**
+11. **Database Closure & Benchmarking:**
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
-    - Use the **`soc-db-provider`** skill to update the incident status to **`CLOSED`** and set the final **`resolution`** using the nuanced taxonomy.
+    - Use the **`soc-db-provider`** skill to update the incident status to **`CLOSED`**.
     - **Efficiency Benchmarking:** You MUST return a formatted **Performance Summary** to the Governor, including:
         - **Total Runtime:** [X] seconds
         - **Agent Step Count:** [Y] interactions
         - **Total Tokens Used:** [Z]
         - **Report Path:** [Path]
-    - Return this summary as your final response.
+    - **Session Compaction Guidance:** Conclude your summary with the following mandatory guidance:
+        - *"**COST ADVISORY:** To prevent sliding context window bloat and maintain optimal performance, please run the **`/clear`** command before starting your next investigation."*
+    - Return this summary and advisory as your final response.
