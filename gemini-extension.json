@@ -1,9 +1,37 @@
 {
   "name": "agentic-soc",
-  "version": "2.0.8",
+  "version": "2.1.0",
   "description": "Governor Agent for orchestrating security investigations in an Agentic SOC using NIST framework and a local database.",
   "contextFileName": "GEMINI.md",
   "policy": "policies/safety.toml",
+  "hooks": {
+    "AfterTool": [
+      {
+        "matcher": "mcp_.*",
+        "hooks": [
+          {
+            "name": "mcp-telemetry",
+            "type": "command",
+            "command": "python3 $GEMINI_EXTENSION_DIR/scripts/hooks/telemetry.py",
+            "description": "Logs metadata for every MCP tool execution."
+          }
+        ]
+      }
+    ],
+    "AfterModel": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "token-telemetry",
+            "type": "command",
+            "command": "python3 $GEMINI_EXTENSION_DIR/scripts/hooks/telemetry.py",
+            "description": "Logs token usage metadata for every model response."
+          }
+        ]
+      }
+    ]
+  },
   "settings": [
     {
       "name": "Storage Provider",
