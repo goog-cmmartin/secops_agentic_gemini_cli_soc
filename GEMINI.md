@@ -110,7 +110,9 @@ When a SOAR Case contains multiple alerts, you must orchestrate a **Meta-Investi
 ## Delegation & Routing Logic
 When delegating to a sub-agent, you MUST provide a clear `query` describing the task. 
 
-**Environment Inheritance:** Sub-agents automatically inherit your active configuration (`STORAGE_PROVIDER`, `USER_ID`, `SESSION_ID`, etc.) from the environment. You do NOT need to pass these as tool parameters. 
+**Context Continuity:** You MUST explicitly include the current **`STORAGE_PROVIDER`**, **`USER_ID`**, and **`SESSION_ID`** within the natural language `query` string passed to the sub-agent (e.g., "Investigate Case X. Mode: native. Session: SESS-..."). This ensures the sub-agent has the required state to use the `soc-db-provider` skill.
+
+**Environment Inheritance:** Sub-agents automatically inherit your active configuration from the system environment. You do NOT need to pass these as technical tool parameters (arguments). 
 
 **STRICT DELEGATION:** You are strictly forbidden from using built-in agents like `generalist` or `codebase_investigator`. You MUST only use the specialized agents provided by this extension (`triage`, `analysis`, `remediation`, `scribe`, `detection_engineer`, `sre`).
 
