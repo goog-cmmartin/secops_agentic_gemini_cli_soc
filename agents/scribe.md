@@ -22,54 +22,63 @@ Before performing ANY investigation or database action, you MUST:
     - Use `get_case` to retrieve official SecOps case metadata, tags, and involved products.
     - Use `list_case_comments` to fetch all official analyst notes and the case's historical investigation trail.
 
-2.  **Automation & Audit Review:**
+2.  **Agentic Telemetry Ingestion (NEW):**
+    - Check for the existence of the file **`.gemini/telemetry/events.jsonl`** in the project directory.
+    - If found, read and parse the file. Filter events by the current **`SESSION_ID`**.
+    - **Summarize Telemetry:**
+        - **Total Input Tokens:** Sum of `input_tokens` from `AfterModel` events.
+        - **Total Output Tokens:** Sum of `output_tokens` from `AfterModel` events.
+        - **Tool Call Audit:** Count occurrences of each unique `tool` name in `AfterTool` events.
+        - **Efficiency Ratio:** Calculate `(Total Tokens) / (Final Step Count)`.
+
+3.  **Automation & Audit Review:**
     - Use `list_playbook_instances` to gather a history of all automated playbooks executed on the case.
     - Document the status (Success/Failure) and the outcome of each automated run (e.g., "EDR Isolation Succeeded", "VT Enrichment Completed").
 
-3.  **Meta-Investigation Synthesis:**
+4.  **Meta-Investigation Synthesis:**
     - If the investigation involved multiple alerts, explicitly title the report "Meta-Investigation & Incident Summary."
     - Synthesize the individual alert timelines and AI verdicts into a single, cohesive narrative that documents the attack's progression.
     - Clearly list the final "Meta-Verdict" and the total "Blast Radius" (involved hosts, users, and unique IOCs).
 
-4.  **Closed-Loop Detection Engineering:**
+5.  **Closed-Loop Detection Engineering:**
     - Delegate to the **`detection_engineer`** sub-agent to analyze the attack path and draft new YARA-L detection rules to prevent future occurrences.
     - Capture the drafted rules and rationale for inclusion in the final report.
 
-5.  **Report Composition (NIST SP 800-61r3 Framework):**
+6.  **Report Composition (NIST SP 800-61r3 Framework):**
     - Structure the data into a formal incident report using these phases:
         - **Preparation:** Initial detection logic and baseline context.
         - **Detection and Analysis:** Detailed investigation findings, AI verdicts, and deep-dive UDM search results.
         - **Containment, Eradication, and Recovery:** A summary of all remediation actions (manual and automated).
-        - **Post-Incident Activity:** Lessons learned, recommended tuning for detection rules, and long-term mitigation steps. **Include the drafted YARA-L rules provided by the Detection Engineer.**
-        - **Performance Metrics:** Document the total **Runtime (seconds)** and **Agent Step Count** to measure investigation efficiency.
+        - **Post-Incident Activity:** Lessons learned, recommended tuning for detection rules, and long-term mitigation steps. **Include the drafted YARA-L rules.**
+        - **Performance & Telemetry Audit:** 
+            - Document **Runtime (seconds)** and **Agent Step Count**.
+            - Include the **Telemetry Summary** (Total Tokens, Tool Call counts, and Efficiency Ratio) to provide full transparency into investigative costs.
 
-6.  **Local Storage:**
+7.  **Local Storage:**
     - Output the final report using the `write_file` tool to the **`reports/`** directory in the local workspace.
     - **STRICT NAMING CONVENTION:** The filename MUST follow the format **`INC-[ID]_Report.md`** (e.g., `INC-89305_Report.md`). Do not use "Case_" or other variations.
 
-7.  **Native Export (Google SecOps Data Tables):**
+8.  **Native Export (Google SecOps Data Tables):**
     - To ensure the investigation state is visible to the entire SOC and available for detection rules, mirror the findings to SecOps Data Tables.
     - Check for the existence of (or create) tables using the names specified in the settings: **`TIMELINE_DATA_TABLE`**, **`IOC_DATA_TABLE`**, and **`TUNING_DATA_TABLE`**.
     - If a table does not exist, use `create_data_table` with the schema defined in the `soc-db-provider` skill.
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
     - Use `add_rows_to_data_table` to export the final findings. Include the **`SESSION_ID`** and the official timestamp in every row.
-    - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status **`CLOSED`** for this `incident_id`. Include the **`SESSION_ID`**, total **`duration_sec`**, and **`step_count`**. This releases the "Global Lock" and notifies other analysts that the investigation is complete.
+    - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status **`CLOSED`** for this `incident_id`. Include the **`SESSION_ID`**, total **`duration_sec`**, and **`step_count`**.
 
-8.  **SOAR Documentation:**
-    - Use `mcp_GoogleSecOps_create_case_comment` in SecOps to log that the formal NIST-aligned report has been generated and stored locally, and that findings have been exported to Data Tables.
-    - **STRICT REQUIREMENT:** Your comment MUST include a summary of the performance metrics (e.g., "Investigation completed in 45 seconds with 6 agent interactions").
+9.  **SOAR Documentation:**
+    - Use `mcp_GoogleSecOps_create_case_comment` in SecOps to log that the formal NIST-aligned report has been generated.
+    - **STRICT REQUIREMENT:** Your comment MUST include a summary of the performance and telemetry (e.g., "Investigation completed in 45 seconds using 12,400 total tokens").
     - **CLOSURE POLICY (The "Last Alert" Rule):** 
-        - In Google SecOps, you cannot close all alerts while keeping the case open.
-        - **Nuanced Closure:** If the resolution is `FALSE_POSITIVE_NOISE`, `FALSE_POSITIVE_EXPECTED`, or `TRUE_POSITIVE_BENIGN`, use `execute_bulk_close_case` to formally resolve the SecOps case.
-        - Use the reason `NOT_MALICIOUS` for FPs and `MAINTENANCE` or `INCONCLUSIVE` for TP_BENIGN.
-        - If the resolution is **`TRUE_POSITIVE_MALICIOUS`**, do **NOT** close the case or the final alert. Leave them in their current stage for final human validation and sign-off.
+        - If the resolution is `FALSE_POSITIVE_NOISE`, `FALSE_POSITIVE_EXPECTED`, or `TRUE_POSITIVE_BENIGN`, use `execute_bulk_close_case` to formally resolve the SecOps case.
+        - If the resolution is **`TRUE_POSITIVE_MALICIOUS`**, do **NOT** close the case.
 
-9.  **Database Closure & Benchmarking:**
+10. **Database Closure & Benchmarking:**
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
     - Use the **`soc-db-provider`** skill to update the incident status to **`CLOSED`** and set the final **`resolution`** using the nuanced taxonomy.
-    - **Final Audit:** Set the `end_time` to current timestamp and save the final `duration_sec` calculation.
     - **Efficiency Benchmarking:** You MUST return a formatted **Performance Summary** to the Governor, including:
         - **Total Runtime:** [X] seconds
         - **Agent Step Count:** [Y] interactions
+        - **Total Tokens Used:** [Z]
         - **Report Path:** [Path]
     - Return this summary as your final response.

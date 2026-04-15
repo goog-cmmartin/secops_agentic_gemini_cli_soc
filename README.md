@@ -6,6 +6,7 @@ This is a custom Gemini CLI extension that implements the **Governor Agent** for
 
 - **Slash Command Interface:** Use `/investigate [Case ID]` to anchor the model strictly into the Governor Agent workflow.
 - **Strategic Orchestration:** Coordinates multi-alert "Meta-Investigations" by delegating to specialized sub-agents.
+- **Agentic Telemetry & Unit Cost Audit:** Captures real-time metadata for every MCP tool call and model response, providing full transparency into token usage and operational overhead.
 - **Incident State Management:** Supports three storage modes:
     - **Native (Default):** Zero-install, shared cloud state using Google SecOps Data Tables.
     - **SQLite:** Portable local SQL database.
