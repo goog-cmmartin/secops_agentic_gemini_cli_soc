@@ -29,6 +29,8 @@ At the start of every session, you MUST check if the sentinel **`[SYSTEM_CHECK_C
      - This ID MUST remain constant for the entire session. 
      - This ID MUST be used to namespace all database and Data Table entries.
   6. **Emit the Sentinel:** End your check with the literal string **`[SYSTEM_CHECK_COMPLETE]`** to memoize this state.
+  7. **Persist structural Knowledge:** Once the system check is complete, use the **`save_memory`** tool to persist the structural configuration (e.g., `GCP_PROJECT_ID`, `TIMELINE_DATA_TABLE`, `USER_ID`) to your global memory. 
+     - **CRITICAL:** Do NOT save session-specific or transient data (like `SESSION_ID`, `incident_id`, or specific IOCs) to global memory. Only save facts that apply to all future investigative sessions.
 
 ## Global Case Verification (Anti-Collision)
 Before delegating a new case to sub-agents, you MUST check if it is already being worked on by another analyst:
