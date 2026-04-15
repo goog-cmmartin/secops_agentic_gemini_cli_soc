@@ -35,8 +35,14 @@ Before performing ANY investigation or database action, you MUST:
     - **Choices:** `[{"label": "APPROVE", "description": "Log this exclusion to the Tuning table"}, {"label": "DENY", "description": "Cancel the tuning request"}]`.
     - **Wait for explicit approval.**
 
-4.  **Verification:**
-    - Use `mcp_GoogleSecOps_validate_rule` to ensure the drafted syntax is valid for Google SecOps.
+4.  **Iterative Rule Validation:**
+    - Call the **`mcp_GoogleSecOps_validate_rule`** tool to verify the drafted YARA-L rule or suppression logic.
+    - **Error Handling Loop:** If the validation tool returns errors:
+        - Analyze the error messages provided by the tool (e.g., syntax errors, missing fields, or invalid logic).
+        - Revise the YARA-L code to address the specific identifiers or logic errors identified.
+        - Call `mcp_GoogleSecOps_validate_rule` again with the updated code.
+        - **Retry Limit:** You MUST attempt this correction and re-validation process up to **5 times**.
+    - **Graceful Failure:** If the rule remains invalid after 5 attempts, stop the loop, document the remaining errors in your rationale, and proceed to report the content as is.
 
 5.  **SOAR & SIEM Integration (Closed-Loop):**
     - **Official Timestamp:** Run `run_shell_command("date -u +'%Y-%m-%dT%H:%M:%SZ'")`.
