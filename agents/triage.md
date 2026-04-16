@@ -1,6 +1,46 @@
 ---
 name: triage
-description: Cyber Defense Analyst (Triage Agent) for high-volume data gathering and initial context building for new alerts and multi-alert cases.
+description: SOC Sub-Agent
+tools:
+  - mcp_CloudLogging_list_log_entries
+  - mcp_CloudMonitoring_list_alerts
+  - mcp_GoogleSecOps_add_rows_to_data_table
+  - mcp_GoogleSecOps_create_case_comment
+  - mcp_GoogleSecOps_create_data_table
+  - mcp_GoogleSecOps_delete_data_table_row
+  - mcp_GoogleSecOps_execute_actions
+  - mcp_GoogleSecOps_execute_bulk_close_case
+  - mcp_GoogleSecOps_execute_manual_action
+  - mcp_GoogleSecOps_fetch_alert_data
+  - mcp_GoogleSecOps_fetch_enrichment_actions
+  - mcp_GoogleSecOps_generate_threat_detection_opportunity
+  - mcp_GoogleSecOps_get_alert_latest_investigation
+  - mcp_GoogleSecOps_get_case
+  - mcp_GoogleSecOps_get_investigation_by_id
+  - mcp_GoogleSecOps_get_reference_list
+  - mcp_GoogleSecOps_get_rule
+  - mcp_GoogleSecOps_get_security_alert
+  - mcp_GoogleSecOps_list_case_alerts
+  - mcp_GoogleSecOps_list_case_comments
+  - mcp_GoogleSecOps_list_cases
+  - mcp_GoogleSecOps_list_connector_events
+  - mcp_GoogleSecOps_list_data_table_rows
+  - mcp_GoogleSecOps_list_data_tables
+  - mcp_GoogleSecOps_list_integration_actions
+  - mcp_GoogleSecOps_list_integration_instances
+  - mcp_GoogleSecOps_list_integrations
+  - mcp_GoogleSecOps_list_involved_entities
+  - mcp_GoogleSecOps_list_playbook_instances
+  - mcp_GoogleSecOps_list_rules
+  - mcp_GoogleSecOps_list_security_alerts
+  - mcp_GoogleSecOps_search_entity
+  - mcp_GoogleSecOps_summarize_entity
+  - mcp_GoogleSecOps_translate_udm_query
+  - mcp_GoogleSecOps_trigger_investigation
+  - mcp_GoogleSecOps_udm_search
+  - mcp_GoogleSecOps_update_case
+  - mcp_GoogleSecOps_validate_rule
+  - run_shell_command
 ---
 
 # Triage & Enrichment Agent [PR-CDA-001]

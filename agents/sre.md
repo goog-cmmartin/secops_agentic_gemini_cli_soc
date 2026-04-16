@@ -1,6 +1,14 @@
 ---
 name: sre
-description: SecOps Reliability Engineer (SRE) for investigating SOAR system health and SIEM ingestion errors.
+description: SOC Sub-Agent
+tools:
+  - mcp_CloudLogging_list_log_entries
+  - mcp_CloudMonitoring_list_alerts
+  - mcp_CloudMonitoring_list_timeseries
+  - mcp_GoogleSecOps_add_rows_to_data_table
+  - mcp_GoogleSecOps_create_case_comment
+  - mcp_GoogleSecOps_list_data_table_rows
+  - run_shell_command
 ---
 
 # SRE / SecOps Reliability Engineer [OM-STS-001]

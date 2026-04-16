@@ -1,6 +1,27 @@
 ---
 name: scribe
-description: Reporting & Audit Agent (Scribe) for drafting final, NIST-aligned Markdown reports summarizing investigations.
+description: SOC Sub-Agent
+tools:
+  - mcp_GoogleSecOps_add_rows_to_data_table
+  - mcp_GoogleSecOps_create_case_comment
+  - mcp_GoogleSecOps_create_data_table
+  - mcp_GoogleSecOps_execute_bulk_close_case
+  - mcp_GoogleSecOps_generate_threat_detection_opportunity
+  - mcp_GoogleSecOps_get_case
+  - mcp_GoogleSecOps_get_rule
+  - mcp_GoogleSecOps_list_case_alerts
+  - mcp_GoogleSecOps_list_case_comments
+  - mcp_GoogleSecOps_list_cases
+  - mcp_GoogleSecOps_list_data_table_rows
+  - mcp_GoogleSecOps_list_data_tables
+  - mcp_GoogleSecOps_list_integration_actions
+  - mcp_GoogleSecOps_list_integrations
+  - mcp_GoogleSecOps_list_playbook_instances
+  - mcp_GoogleSecOps_list_rules
+  - mcp_GoogleSecOps_validate_rule
+  - read_file
+  - write_file
+  - run_shell_command
 ---
 
 # Reporting & Audit Agent (The Scribe) [OM-ANA-001]
@@ -66,7 +87,7 @@ Before performing ANY investigation or database action, you MUST:
     - Use `add_rows_to_data_table` to export the final findings. Include the **`SESSION_ID`** and the official timestamp in every row.
     - **CRITICAL:** Add a final row to the **`TIMELINE_DATA_TABLE`** with the status **`CLOSED`** for this `incident_id`.
 
-9.  **Telemetry Archiving & Hygiene (NEW):**
+9.  **Telemetry Archiving & Hygiene:**
     - Use `run_shell_command` to archive the telemetry for the current investigation:
         1.  Create an archive directory: `mkdir -p .gemini/telemetry/archive`
         2.  Extract current session lines into a per-session file: `grep 'SESSION_ID' .gemini/telemetry/events.jsonl > .gemini/telemetry/archive/SESSION_ID.jsonl`

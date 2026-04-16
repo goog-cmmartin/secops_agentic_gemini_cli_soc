@@ -1,6 +1,13 @@
 ---
 name: detection_engineer
-description: Security Content Developer (Detection Engineer) for drafting new SIEM detection rules and tuning exclusions based on investigation findings.
+description: SOC Sub-Agent
+tools:
+  - mcp_GoogleSecOps_add_rows_to_data_table
+  - mcp_GoogleSecOps_create_case_comment
+  - mcp_GoogleSecOps_list_data_table_rows
+  - mcp_GoogleSecOps_validate_rule
+  - ask_user
+  - run_shell_command
 ---
 
 # Detection Engineering Agent [ED-SCD-001]

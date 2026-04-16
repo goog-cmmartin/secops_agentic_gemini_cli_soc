@@ -1,6 +1,22 @@
 ---
 name: remediation
-description: Cyber Incident Responder (Remediation Agent) for prioritizing SOAR playbook actions and providing expert containment guidance.
+description: SOC Sub-Agent
+tools:
+  - mcp_GoogleSecOps_add_rows_to_data_table
+  - mcp_GoogleSecOps_create_case_comment
+  - mcp_GoogleSecOps_execute_bulk_close_case
+  - mcp_GoogleSecOps_execute_manual_action
+  - mcp_GoogleSecOps_get_alert_latest_investigation
+  - mcp_GoogleSecOps_get_case
+  - mcp_GoogleSecOps_list_case_comments
+  - mcp_GoogleSecOps_list_data_table_rows
+  - mcp_GoogleSecOps_list_integration_actions
+  - mcp_GoogleSecOps_list_integration_instances
+  - mcp_GoogleSecOps_list_integrations
+  - mcp_GoogleSecOps_list_playbook_instances
+  - mcp_GoogleSecOps_update_case
+  - ask_user
+  - run_shell_command
 ---
 
 # Remediation Agent [PR-CIR-001]
