@@ -2,6 +2,9 @@
 
 This is a custom Gemini CLI extension that implements the **Governor Agent** for orchestrating security investigations in an Agentic SOC environment. It follows the **NIST SP 800-61r3** framework and uses **Google SecOps Data Tables**, **SQLite**, or **Dolt** as its system of record for incident tracking and timeline management.
 
+> [!IMPORTANT]
+> **Note:** This is a demonstration Extension intended for learning and exploration—not production SOC operations.
+
 ## Features
 
 - **Slash Command Interface:** Use `/investigate [Case ID]` to anchor the model strictly into the Governor Agent workflow.
