@@ -2,13 +2,13 @@
   "hooks": {
     "AfterTool": [
       {
-        "matcher": "mcp_.*",
+        "matcher": "*",
         "hooks": [
           {
-            "name": "mcp-telemetry",
+            "name": "asoc-tool-telemetry",
             "type": "command",
             "command": "python3 ${extensionPath}/scripts/hooks/telemetry.py",
-            "description": "Logs metadata for every MCP tool execution."
+            "description": "Logs metadata for every tool execution (built-in and MCP)."
           }
         ]
       }
